@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CERW - Criteria-Based Evaluation & Review Workspace</title>
+  <!-- Modern typography imports -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- System Shell Grid Container -->
+  <div class="app-shell">
+    
+    <!-- Top Global Header -->
+    <header class="app-header">
+      <div class="header-logo-section">
+        <div class="logo-orb">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="20" height="20" rx="6" stroke="currentColor" stroke-width="2.5" />
+            <path d="M7 12L10 15L17 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="logo-titles">
+          <h1>CERW Portal</h1>
+          <span class="logo-sub" id="header-program-meta">MNC Colombia Qualifications</span>
+        </div>
+      </div>
+      
+      <!-- Academic Hierarchy Selection chain -->
+      <div class="header-controls">
+        <div class="control-group">
+          <label for="program-selector">Programa de Formación (MNC)</label>
+          <select id="program-selector" class="sleek-select">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="module-selector">Signature / Módulo</label>
+          <select id="module-selector" class="sleek-select">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+        
+        <div class="control-group">
+          <label for="event-selector">Milestone Event (Evidencia)</label>
+          <div class="select-btn-group">
+            <select id="event-selector" class="sleek-select">
+              <!-- Dynamically populated -->
+            </select>
+            <button id="add-event-btn" class="header-icon-btn" title="Create Custom Assessment Event">
+              <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Theme & Reset Utilities -->
+      <div class="header-utilities">
+        <button id="ai-analyzer-toggle-btn" class="utility-btn btn-ai-glow" title="AI Qualifications Analyzer">
+          <span class="ai-orb">🔮</span>
+          <span>AI MNC Extractor</span>
+        </button>
+        <button id="theme-toggle" class="utility-btn" title="Toggle Light/Dark Theme">
+          <span class="theme-icon-dark">🌙</span>
+          <span class="theme-icon-light">☀️</span>
+        </button>
+        <button id="reset-db-btn" class="utility-btn btn-danger-outline" title="Reset all data to default seed">
+          <span>Reset Simulation</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Workspace Top Tab Navigation -->
+    <div class="workspace-tabs-nav">
+      <button class="workspace-tab-btn active" data-workspace-tab="dashboard" id="tab-btn-dashboard">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+        </svg>
+        <span>🏠 Inicio</span>
+      </button>
+      <button class="workspace-tab-btn" data-workspace-tab="grading" id="tab-btn-grading">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+        </svg>
+        <span>📊 Panel de Calificaciones</span>
+      </button>
+      <button class="workspace-tab-btn" data-workspace-tab="mnc-suite" id="tab-btn-mnc-suite">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.43l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128c.332-.183.582-.495.645-.869l.214-1.28z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        <span>⚙️ Suite de Criterios MNC</span>
+      </button>
+      <button class="workspace-tab-btn" data-workspace-tab="manager-suite" id="tab-btn-manager-suite">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v-2.63c0-1.04-.6-2.01-1.57-2.46l-3.85-1.78a1.97 1.97 0 00-1.66 0l-3.85 1.78c-.97.45-1.57 1.42-1.57 2.46v2.63m12.42 0a2.25 2.25 0 00-1.17-1.95L15 9.75M4.5 12h15m-15 0a2.25 2.25 0 01-1.17-1.95L8.25 9.75m0 0V6.75A2.25 2.25 0 0110.5 4.5h3a2.25 2.25 0 012.25 2.25v3" />
+        </svg>
+        <span>💼 Suite de Gerencia</span>
+      </button>
+    </div>
+
+    <!-- Workspace Tab Views Container -->
+    <div class="workspace-views-container">
+      
+      <!-- VIEW 0: Dashboard (Inicio) -->
+      <div id="view-dashboard" class="workspace-view active">
+        <div class="dashboard-container">
+          
+          <!-- Embedded Metrics Overview Banner -->
+          <section class="dashboard-metrics-row">
+             <!-- Metric Card 1: Cohort Size -->
+             <div class="metric-card" id="dash-metric-size">
+               <div class="metric-icon bg-info-soft">
+                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>
+               </div>
+               <div class="metric-details">
+                 <span class="metric-label">Estudiantes Matriculados</span>
+                 <span class="metric-value" id="dash-val-size">0</span>
+               </div>
+             </div>
+             
+             <!-- Metric Card 2: Grading Progress -->
+             <div class="metric-card" id="dash-metric-progress">
+               <div class="metric-icon bg-info-soft" style="color: var(--color-info);">
+                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+               </div>
+               <div class="metric-details">
+                 <span class="metric-label">Progreso de Calificación</span>
+                 <span class="metric-value" id="dash-val-progress-text">0%</span>
+               </div>
+             </div>
+             
+             <!-- Metric Card 3: Active Appeals -->
+             <div class="metric-card alert-state" id="dash-metric-appeals">
+               <div class="metric-icon bg-danger-soft animate-pulse">
+                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>
+               </div>
+               <div class="metric-details">
+                 <span class="metric-label">Apelaciones Activas</span>
+                 <span class="metric-value text-danger" id="dash-val-appeals">0</span>
+               </div>
+             </div>
+             
+             <!-- Metric Card 4: Class Health -->
+             <div class="metric-card" id="dash-metric-health">
+               <div class="metric-icon bg-success-soft">
+                 <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12z" /></svg>
+               </div>
+               <div class="metric-details">
+                 <span class="metric-label">Salud de la Cohorte</span>
+                 <span class="metric-value text-success" id="dash-val-health">0%</span>
+               </div>
+             </div>
+          </section>
+
+          <!-- Dashboard Two-Column Grid -->
+          <div class="dashboard-grid">
+            
+            <!-- Column 1: Priority Tasks (Concept A) -->
+            <div class="dashboard-col">
+              
+              <!-- Bottleneck Widget -->
+              <div class="dashboard-card" id="dash-bottleneck-widget">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+                  <h3 style="font-size: 0.95rem; font-weight: 700;">🚨 Cuello de Botella de Calificación</h3>
+                  <span class="badge font-mono" id="dash-active-event-badge" style="font-size: 0.7rem; padding: 2px 8px; border-radius: 4px; background-color: var(--bg-tertiary); color: var(--text-secondary);">Event 1</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">Progreso de la evidencia activa. Registre las calificaciones restantes para cerrar este hito académico.</p>
+                <div class="progress-bar-wrapper" style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px;">
+                  <div style="display: flex; justify-content: space-between; font-size: 0.72rem;" class="font-mono">
+                    <span id="dash-progress-label">0 / 0 Evaluaciones</span>
+                    <span id="dash-progress-pct">0%</span>
+                  </div>
+                  <div class="dashboard-progress-track" style="height: 10px; background-color: var(--bg-tertiary); border-radius: 5px; overflow: hidden; border: 1px solid var(--border-color);">
+                    <div id="dash-progress-fill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--color-info), #06b6d4); transition: width var(--transition-slow);"></div>
+                  </div>
+                </div>
+                <button id="dash-btn-go-grading" class="sleek-btn-primary" style="padding: 8px 14px; font-size: 0.78rem; width: fit-content; align-self: flex-start;">
+                  <span>Ir a la Matriz de Calificaciones →</span>
+                </button>
+              </div>
+
+              <!-- At-Risk Warnings -->
+              <div class="dashboard-card" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+                  <h3 style="font-size: 0.95rem; font-weight: 700;">⚠️ Estudiantes en Riesgo Académico</h3>
+                </div>
+                <div id="dash-at-risk-feed" style="overflow-y: auto; flex: 1; padding-right: 4px;">
+                  <table class="dashboard-table" id="dash-at-risk-table" style="display: none; width: 100%;">
+                    <thead>
+                      <tr>
+                        <th style="width: 40%;">Estudiante</th>
+                        <th style="width: 20%; text-align: center;">Nota</th>
+                        <th style="width: 40%;">Cores Faltantes</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-at-risk-tbody">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                  <div class="empty-feed-state" id="dash-empty-at-risk" style="padding: 24px 10px;">
+                    <div class="empty-badge">💪</div>
+                    <h3>Todos los Estudiantes Aprobando</h3>
+                    <p style="font-size: 0.72rem;">Todos los estudiantes han logrado las competencias técnicas obligatorias rindiendo sobre 3.0.</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Appeals Inbox Widget -->
+              <div class="dashboard-card" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+                  <h3 style="font-size: 0.95rem; font-weight: 700;">📨 Bandeja de Apelaciones</h3>
+                </div>
+                <div id="dash-appeals-feed" style="overflow-y: auto; flex: 1; padding-right: 4px;">
+                  <table class="dashboard-table" id="dash-appeals-table" style="display: none; width: 100%;">
+                    <thead>
+                      <tr>
+                        <th style="width: 35%;">Estudiante</th>
+                        <th style="width: 45%;">Criterio / Evidencia</th>
+                        <th style="width: 20%; text-align: right;">Acción</th>
+                      </tr>
+                    </thead>
+                    <tbody id="dash-appeals-tbody">
+                      <!-- Dynamic rows -->
+                    </tbody>
+                  </table>
+                  <div class="empty-feed-state" id="dash-empty-appeals" style="padding: 24px 10px;">
+                    <div class="empty-badge">🎉</div>
+                    <h3>Sin Apelaciones Pendientes</h3>
+                    <p style="font-size: 0.72rem;">No hay sustentaciones de estudiantes esperando por su revisión.</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Column 2: Pedagogical Analytics (Concept B) -->
+            <div class="dashboard-col" style="display: flex; flex-direction: column; gap: 20px; min-height: 0;">
+              
+              <!-- Heatmap Widget -->
+              <div class="dashboard-card" style="flex: 1.3; display: flex; flex-direction: column; min-height: 0;">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+                  <h3 style="font-size: 0.95rem; font-weight: 700;">📊 Histograma de Dominio MNC</h3>
+                </div>
+                <p style="font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.35;">
+                  Tasa de aprobación por criterio en la evidencia actual. Las competencias obligatorias (Core) con dominancia inferior al <strong class="text-danger">60%</strong> generarán una alerta de nivel pedagógico.
+                </p>
+                <div id="dash-heatmap-container" style="overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 12px; padding-right: 4px;">
+                  <!-- Dynamically drawn percentage bars -->
+                </div>
+              </div>
+
+              <!-- Grade Distribution Histogram -->
+              <div class="dashboard-card" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <div class="card-header" style="border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 12px;">
+                  <h3 style="font-size: 0.95rem; font-weight: 700;">📈 Distribución de Calificaciones</h3>
+                </div>
+                <div style="flex: 1; display: flex; align-items: flex-end; justify-content: space-around; padding: 20px 10px 10px 10px; border-bottom: 1px solid var(--border-color); min-height: 120px;" id="dash-histogram-bars">
+                  <div class="histogram-group" style="display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; gap: 6px;">
+                    <span class="histogram-value font-mono" id="hist-val-fail" style="font-size: 0.7rem;">0</span>
+                    <div class="histogram-bar" id="hist-bar-fail" style="width: 28px; background-color: var(--color-notmet); border-radius: 4px 4px 0 0; transition: height var(--transition-slow); height: 0%;"></div>
+                    <span class="histogram-label font-sans" style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Reprobados<br>&lt; 3.0</span>
+                  </div>
+                  <div class="histogram-group" style="display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; gap: 6px;">
+                    <span class="histogram-value font-mono" id="hist-val-pass" style="font-size: 0.7rem;">0</span>
+                    <div class="histogram-bar" id="hist-bar-pass" style="width: 28px; background-color: var(--color-pending); border-radius: 4px 4px 0 0; transition: height var(--transition-slow); height: 0%;"></div>
+                    <span class="histogram-label font-sans" style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Aprobados<br>3.0 - 3.9</span>
+                  </div>
+                  <div class="histogram-group" style="display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; gap: 6px;">
+                    <span class="histogram-value font-mono" id="hist-val-mastery" style="font-size: 0.7rem;">0</span>
+                    <div class="histogram-bar" id="hist-bar-mastery" style="width: 28px; background-color: var(--color-info); border-radius: 4px 4px 0 0; transition: height var(--transition-slow); height: 0%;"></div>
+                    <span class="histogram-label font-sans" style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Avanzado<br>4.0 - 4.9</span>
+                  </div>
+                  <div class="histogram-group" style="display: flex; flex-direction: column; align-items: center; flex: 1; height: 100%; justify-content: flex-end; gap: 6px;">
+                    <span class="histogram-value font-mono" id="hist-val-perfect" style="font-size: 0.7rem;">0</span>
+                    <div class="histogram-bar" id="hist-bar-perfect" style="width: 28px; background: linear-gradient(180deg, var(--color-success), #10b981); border-radius: 4px 4px 0 0; transition: height var(--transition-slow); height: 0%;"></div>
+                    <span class="histogram-label font-sans" style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">Excelente<br>5.0</span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- VIEW 1: Panel de Calificaciones -->
+      <div id="view-grading" class="workspace-view">
+        <!-- Main Workspace Section -->
+        <main class="app-main-content">
+          
+          <!-- Column A: Priority Inbox Widget -->
+          <aside class="side-widget-column" id="priority-inbox-sidebar" aria-label="Urgent Alerts Portal">
+            <!-- Sidebar Collapse Pin -->
+            <button id="toggle-inbox-btn" class="sidebar-collapse-btn" title="Minimizar / Expandir Bandeja">
+              <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            <div class="widget-header">
+              <div class="widget-title-group">
+                <h2>Priority Inbox</h2>
+                <span class="widget-badge" id="inbox-badge-count">0</span>
+              </div>
+              <p class="widget-subtitle font-mono">Active Student Appeals (Workflow 1)</p>
+            </div>
+            
+            <!-- Active Appeals Feed -->
+            <div class="priority-inbox-feed" id="priority-inbox-container">
+              <!-- Dynamically filled with dispute list items -->
+              <div class="empty-feed-state" id="empty-inbox-state">
+                <div class="empty-badge">🎉</div>
+                <h3>No Pending Appeals</h3>
+                <p>All student grades are currently resolved or accepted.</p>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Column C: Two-Dimensional Matrix (Main Grading Sheet) -->
+          <section class="main-matrix-column" aria-label="Grading Matrix Spreadsheet">
+            <div class="matrix-actions-bar">
+              <div class="matrix-meta-titles">
+                <h2>MNC Competency Matrix</h2>
+                <span class="meta-current-state" id="matrix-module-event-text">Software Development — Event 1</span>
+              </div>
+              
+              <button id="matrix-config-toggle-btn" class="sleek-btn-secondary font-sans" style="padding: 6px 12px; font-size: 0.78rem; display: flex; align-items: center; gap: 6px;">
+                <span>⚙️ Configurar Criterios</span>
+              </button>
+              
+              <div class="matrix-legend-row">
+                <span class="legend-title font-mono">Click cells to cycle:</span>
+                <div class="legend-item"><span class="legend-dot status-pending">🟡</span> Pending</div>
+                <div class="legend-item"><span class="legend-dot status-met">✅</span> Met</div>
+                <div class="legend-item"><span class="legend-dot status-notmet">❌</span> Not Met</div>
+                <div class="legend-item"><span class="legend-dot status-disputed">⛔</span> Disputed</div>
+              </div>
+            </div>
+
+            <!-- The Table Viewport -->
+            <div class="matrix-viewport">
+              <table class="grading-matrix" id="grading-matrix-table">
+                <!-- Headers and rows are dynamically rendered by app.js -->
+                <thead>
+                  <tr id="matrix-header-row">
+                    <!-- Dynamically filled -->
+                  </tr>
+                </thead>
+                <tbody id="matrix-body">
+                  <!-- Dynamically filled -->
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="matrix-footer-details">
+              <div class="footnote-group">
+                <span class="footnote-icon">ℹ️</span>
+                <p>Competency criteria are officially extracted from the <strong>Marco Nacional de Cualificaciones (MNC) of Colombia</strong>. Evaluated on binary standards.</p>
+              </div>
+              <div class="shortcut-box">
+                <span class="shortcut-tag font-mono">Tip</span> Move mouse over cells to highlight row/column alignment.
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- VIEW 2: Suite de Criterios MNC -->
+      <div id="view-mnc-suite" class="workspace-view">
+        <main class="mnc-suite-workspace">
+          <!-- Left Navigation Panel -->
+          <aside class="mnc-suite-sidebar">
+            <div class="mnc-sidebar-header">
+              <div class="drawer-title-group">
+                <span class="drawer-tag bg-ai-tag" id="ai-status-badge">⚡ Real Gemini AI Connected</span>
+                <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-top: 4px;">MNC Suite</h2>
+              </div>
+            </div>
+            
+            <div class="main-drawer-tabs">
+              <button class="main-drawer-tab-btn active" data-main-tab="ai" id="sub-tab-btn-ai">
+                <span>🔮 Alineación con IA</span>
+              </button>
+              <button class="main-drawer-tab-btn" data-main-tab="config" id="sub-tab-btn-config">
+                <span>⚙️ Configurar Criterios</span>
+              </button>
+              <button class="main-drawer-tab-btn" data-main-tab="add-manual" id="sub-tab-btn-add-manual">
+                <span>➕ Agregar Criterio</span>
+              </button>
+            </div>
+            
+            <div class="mnc-sidebar-help">
+              <span class="help-icon">💡</span>
+              <p>Extraiga competencias de cualificaciones oficiales mediante IA, active o desactive criterios para evidencias específicas, o añada competencias personalizadas manualmente.</p>
+            </div>
+          </aside>
+          
+          <!-- Right Content View Area -->
+          <section class="mnc-suite-content">
+            <!-- Scrollable content wrapper -->
+            <div class="drawer-content">
+              
+              <!-- Tab A: AI Qualifications Analyzer -->
+              <div id="main-tab-content-ai" class="main-tab-content-group" style="display: flex; flex-direction: column; gap: 14px;">
+                <!-- API Key Configuration Section -->
+                <div class="ai-key-config-container">
+                  <button class="ai-key-toggle-header" id="ai-key-toggle-header">
+                    <span>⚙️ Configuración de API Key</span>
+                    <span class="toggle-icon-key" id="key-arrow">▼</span>
+                  </button>
+                  <div class="ai-key-body" id="ai-key-body" style="display: none; padding: 12px; gap: 8px; flex-direction: column;">
+                    <label for="ai-api-key-input" class="font-mono text-xs" style="color: var(--text-muted);">Clave API de Gemini:</label>
+                    <div style="display: flex; gap: 8px;">
+                      <input type="password" id="ai-api-key-input" placeholder="Pegue su API Key aquí..." class="sleek-input text-xs" style="flex: 1; padding: 8px 10px;">
+                      <button id="ai-api-key-toggle-view" class="sleek-btn-secondary text-xs" style="padding: 0 10px;">👁️</button>
+                    </div>
+                    <p style="font-size: 0.65rem; color: var(--text-muted); line-height: 1.35;">La clave está pre-cargada y se guarda en localStorage de forma segura.</p>
+                  </div>
+                </div>
+
+                <!-- File Selector Dropzone -->
+                <div class="ai-upload-section">
+                  <div class="ai-dropzone" id="ai-upload-dropzone">
+                    <svg class="dropzone-icon" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                    </svg>
+                    <p class="dropzone-text" id="ai-dropzone-label">Arrastra el archivo de cualificación (.txt, .pdf) o haz clic para subir</p>
+                    <input type="file" id="ai-file-input" accept=".txt,.pdf" style="display: none;">
+                  </div>
+                </div>
+
+                <!-- Sample File Selection -->
+                <div class="ai-sample-section">
+                  <label for="ai-sample-selector" class="font-mono text-xs">Cargar archivo de muestra oficial:</label>
+                  <select id="ai-sample-selector" class="sleek-select text-sm">
+                    <option value="">-- Seleccione una Ficha Técnica MNC --</option>
+                    <option value="MNC_Desarrollo_Software.txt">MNC Desarrollo de Software (Existente)</option>
+                    <option value="MNC_Desarrollo_Multimedia.txt">MNC Desarrollo Multimedia (Existente)</option>
+                    <option value="MNC_Diseno_Industrial.txt">MNC Diseño Industrial (¡Nuevo programa!)</option>
+                  </select>
+                </div>
+
+                <!-- Scan Progress Telemetry -->
+                <div class="ai-scanner-section" id="ai-scanner-section" style="display: none;">
+                  <h3 class="font-mono text-xs">Procesamiento y Extracción de Competencias:</h3>
+                  <div class="laser-sweep-container">
+                    <div class="laser-sweep-line"></div>
+                    <span class="scanning-label font-mono">Simulando Extracción IA...</span>
+                  </div>
+                  <div class="terminal-console" id="ai-log-terminal">
+                    <!-- Real-time terminal lines will spawn here -->
+                  </div>
+                </div>
+
+                <!-- Alignment & Results Report View -->
+                <div class="ai-report-view" id="ai-report-view" style="display: none;">
+                  <div class="alignment-score-container">
+                    <div class="alignment-score-radial">
+                      <svg width="60" height="60" viewBox="0 0 36 36" class="circular-chart">
+                        <path class="circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <path class="circle" id="ai-radial-bar" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                        <text x="18" y="21.5" class="percentage" id="ai-radial-text">0%</text>
+                      </svg>
+                    </div>
+                    <div class="alignment-score-info">
+                      <h3 id="ai-extracted-program-name">Técnico en Diseño</h3>
+                      <p id="ai-alignment-summary">Criterios alineados de forma óptima con Razonamiento Cuantitativo.</p>
+                    </div>
+                  </div>
+
+                  <h3 class="font-mono text-xs category-header-title" style="margin-bottom: 10px;">Competencias MNC a Aplicar:</h3>
+                  <div class="ai-competencies-grid" id="ai-competencies-container">
+                    <!-- Dynamic competency cards will load here -->
+                  </div>
+                </div>
+                
+                <!-- Tab A self-contained AI footer -->
+                <div class="drawer-footer" id="ai-drawer-footer" style="display: none; padding: 14px 0 0 0; border-top: 1px solid var(--border-color); width: 100%;">
+                  <button id="ai-apply-btn" class="sleek-btn-success flex-1" style="width: 100%; justify-content: center;">
+                    <span>Aplicar Competencias al Módulo (Mutar Matriz)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tab B: Milestone Configurator checklists -->
+              <div id="main-tab-content-config" class="main-tab-content-group" style="display: none; flex-direction: column; gap: 14px;">
+                <div class="config-header" style="padding: 0 0 10px 0; border-bottom: 1px solid var(--border-color);">
+                  <p class="config-subtitle" style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">Seleccione criterios activos para <strong id="config-active-event-name">Event 1</strong></p>
+                </div>
+                
+                <!-- Tabbed Navigation inside the configurator panel -->
+                <div class="config-tabs-nav" style="padding: 0; background: transparent; border-bottom: 1px solid var(--border-color);">
+                  <button class="config-tab-btn active" data-tab="core" style="padding: 10px 12px; font-size: 0.75rem;">
+                    <span>Técnicas</span>
+                    <span class="tab-badge" id="badge-count-core">0</span>
+                  </button>
+                  <button class="config-tab-btn" data-tab="advanced" style="padding: 10px 12px; font-size: 0.75rem;">
+                    <span>Avanzadas</span>
+                    <span class="tab-badge" id="badge-count-advanced">0</span>
+                  </button>
+                  <button class="config-tab-btn" data-tab="transversal" style="padding: 10px 12px; font-size: 0.75rem;">
+                    <span>Transversales</span>
+                    <span class="tab-badge" id="badge-count-transversal">0</span>
+                  </button>
+                </div>
+
+                <!-- Dynamic Category Header block matching the user's attached design! -->
+                <div class="config-category-header" style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding: 2px 0;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="category-status-dot" id="config-category-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--color-danger); display: inline-block;"></span>
+                    <h3 class="category-title" id="config-category-title" style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0; font-family: var(--font-sans);">Competencias Técnicas (Core)</h3>
+                  </div>
+                  <span class="category-pill-badge" id="config-category-pill" style="font-size: 0.6rem; font-weight: 700; padding: 1px 6px; border-radius: 10px; background-color: var(--bg-danger-soft); color: var(--color-danger); font-family: var(--font-mono); text-transform: uppercase;">Obligatorias</span>
+                </div>
+                
+                <p class="category-desc" id="config-tab-desc" style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; line-height: 1.35; margin-top: 0;">
+                  Deficiencias en competencias técnicas obligatorias MNC implican una nota reprobatoria &lt; 3.0.
+                </p>
+                
+                <div class="config-scroller" style="padding: 0; overflow-y: visible; flex: 1;">
+                  <!-- Category 1: Core Performance Criteria -->
+                  <div class="checkbox-group" id="core-criteria-list" data-tab-content="core">
+                    <!-- Dynamically loaded checkboxes -->
+                  </div>
+
+                  <!-- Category 2: Advanced Performance Criteria -->
+                  <div class="checkbox-group" id="advanced-criteria-list" data-tab-content="advanced" style="display: none;">
+                    <!-- Dynamically loaded checkboxes -->
+                  </div>
+
+                  <!-- Category 3: Transversal Competencies -->
+                  <div class="checkbox-group" id="transversal-criteria-list" data-tab-content="transversal" style="display: none;">
+                    <!-- Dynamically loaded checkboxes -->
+                  </div>
+                </div>
+
+                <!-- Sidebar Configurator tab footer button -->
+                <div class="config-panel-footer" style="padding: 14px 0 0 0; border-top: 1px solid var(--border-color); display: flex; width: 100%;">
+                  <button id="config-sidebar-confirm-btn" class="sleek-btn-primary flex-1 justify-center" style="width: 100%;">
+                    <span>Guardar Configuración</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tab C: Manual Custom Criteria Addition Form -->
+              <div id="main-tab-content-add-manual" class="main-tab-content-group" style="display: none; flex-direction: column; gap: 16px;">
+                <div class="config-header" style="padding: 0 0 10px 0; border-bottom: 1px solid var(--border-color);">
+                  <p class="config-subtitle" style="font-size: 0.72rem; color: var(--text-muted); margin: 0;">Agregar competencia personalizada a la asignatura activa</p>
+                </div>
+                
+                <form id="form-add-criterion" class="sleek-form" style="display: flex; flex-direction: column; gap: 14px; padding-top: 8px;">
+                  <div class="form-row" style="display: flex; gap: 12px;">
+                    <div class="form-group" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                      <label for="new-crit-code" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Código de Criterio</label>
+                      <input type="text" id="new-crit-code" placeholder="Ej: C4, A3" class="sleek-input" required style="padding: 8px 10px; font-size: 0.82rem; text-transform: uppercase;">
+                    </div>
+                    <div class="form-group" style="flex: 1.5; display: flex; flex-direction: column; gap: 4px;">
+                      <label for="new-crit-type" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Tipo / Categoría MNC</label>
+                      <select id="new-crit-type" class="sleek-select" required style="padding: 8px 10px; font-size: 0.82rem;">
+                        <option value="Core">Técnica (Core)</option>
+                        <option value="Advanced">Avanzada (Advanced)</option>
+                        <option value="Transversal">Transversal (Transversal)</option>
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
+                    <label for="new-crit-element" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Elemento de Desempeño</label>
+                    <input type="text" id="new-crit-element" placeholder="Ej: Elemento 1: Formulación Algorítmica y Lógica" class="sleek-input" required style="padding: 8px 10px; font-size: 0.82rem;">
+                  </div>
+                  
+                  <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
+                    <label for="new-crit-name" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Nombre de la Competencia</label>
+                    <input type="text" id="new-crit-name" placeholder="Ej: Simplificación Booleana" class="sleek-input" required style="padding: 8px 10px; font-size: 0.82rem;">
+                  </div>
+                  
+                  <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
+                    <label for="new-crit-desc" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Descripción detallada (Criterio de Desempeño)</label>
+                    <textarea id="new-crit-desc" placeholder="Describa el estándar binario y las condiciones técnicas de evaluación..." class="sleek-textarea" required rows="4" style="padding: 8px 10px; font-size: 0.82rem; resize: none; font-family: var(--font-sans);"></textarea>
+                  </div>
+                  
+                  <div class="form-help-banner" style="background-color: var(--bg-info-soft); border-left: 3px solid var(--color-info); padding: 8px 12px; border-radius: 4px; font-size: 0.7rem; color: var(--text-secondary); line-height: 1.35;">
+                    💡 <strong>Nota del Sistema:</strong> El nuevo criterio se adaptará automáticamente en el alcance del <strong>Nivel Técnico (Nivel 3 MNC)</strong> y quedará registrado de forma persistente.
+                  </div>
+                  
+                  <button type="submit" class="sleek-btn-primary" style="justify-content: center; padding: 10px; font-size: 0.85rem; margin-top: 4px; width: 100%;">
+                    <span>Crear Criterio y Registrar</span>
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </section>
+        </main>
+      </div>
+
+      <!-- VIEW 3: Suite de Gerencia (Manager Workspace) -->
+      <div id="view-manager-suite" class="workspace-view">
+        <main class="mnc-suite-workspace">
+          <!-- Left Configuration Panel -->
+          <aside class="mnc-suite-sidebar" style="flex: 0 0 350px; max-width: 350px;">
+            <div class="mnc-sidebar-header">
+              <div class="drawer-title-group">
+                <span class="drawer-tag bg-ai-tag">Suite del Gerente</span>
+                <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-top: 4px;">Armonización</h2>
+              </div>
+            </div>
+            
+            <div class="sleek-form" style="display: flex; flex-direction: column; gap: 14px; padding: 10px 0;">
+              <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
+                <label for="mgr-program-name" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Programa de Formación</label>
+                <input type="text" id="mgr-program-name" placeholder="Ej: Técnico en Ciberseguridad" class="sleek-input" value="Desarrollo de software y aplicaciones móviles" style="padding: 8px 10px; font-size: 0.82rem;">
+              </div>
+              
+              <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
+                <label class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase; margin-bottom: 2px;">Asignaturas a Incluir</label>
+                <div class="manager-subjects-list" id="mgr-subjects-container" style="display: flex; flex-direction: column; gap: 6px; background-color: var(--bg-primary); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px; max-height: 150px; overflow-y: auto;">
+                  <!-- Dynamic checkboxes populated by app.js -->
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 6px;">
+                  <input type="text" id="mgr-new-subject-input" placeholder="Nueva asignatura..." class="sleek-input text-xs" style="padding: 6px 8px; flex: 1;">
+                  <button type="button" id="mgr-add-subject-btn" class="sleek-btn-secondary text-xs" style="padding: 0 10px; font-size: 0.72rem; min-width: 60px;">Añadir</button>
+                </div>
+              </div>
+              
+              <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
+                <label class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Subir Catálogo MNC (.txt, .pdf)</label>
+                <div class="ai-upload-section" style="margin-top: 0;">
+                  <div class="ai-dropzone" id="mgr-upload-dropzone" style="padding: 15px 10px; cursor: pointer;">
+                    <svg class="dropzone-icon" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 4px;">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
+                    </svg>
+                    <p class="dropzone-text" id="mgr-dropzone-label" style="font-size: 0.68rem; line-height: 1.2;">Haga clic o arrastre aquí el catálogo</p>
+                    <input type="file" id="mgr-file-input" accept=".txt,.pdf" style="display: none;">
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group" style="display: flex; flex-direction: column; gap: 4px;">
+                <label for="mgr-paste-text" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">O pegue el contenido del catálogo</label>
+                <textarea id="mgr-paste-text" placeholder="Pegue la Ficha Técnica MNC..." class="sleek-textarea" rows="4" style="padding: 8px; font-size: 0.78rem; resize: none; font-family: var(--font-mono);"></textarea>
+              </div>
+            </div>
+            
+            <button type="button" id="mgr-harmonize-btn" class="utility-btn btn-ai-glow w-full" style="justify-content: center; padding: 10px; font-size: 0.82rem; margin-top: 4px;">
+              <span class="ai-orb">🔮</span>
+              <span>Armonizar Plan con Catálogo</span>
+            </button>
+          </aside>
+          
+          <!-- Right Content View Area -->
+          <section class="mnc-suite-content" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+            <div class="drawer-content" style="display: flex; flex-direction: column; flex: 1; min-height: 0; padding: 0 20px;">
+              
+              <!-- Initial state: Empty / Instruction -->
+              <div class="empty-feed-state" id="mgr-empty-results" style="display: flex; flex-direction: column; justify-content: center; flex: 1; padding: 60px 10px;">
+                <div class="empty-badge" style="font-size: 2.5rem; margin-bottom: 8px;">💼</div>
+                <h3>Estructuración de Plan de Estudios</h3>
+                <p style="font-size: 0.75rem; text-align: center; max-width: 320px; color: var(--text-secondary);">Indique el programa de formación, seleccione las asignaturas que componen el plan de estudios y suba el catálogo nacional de cualificaciones para extraer y armonizar los criterios de desempeño mediante Inteligencia Artificial.</p>
+              </div>
+
+              <!-- Scanning state -->
+              <div class="ai-scanner-section" id="mgr-scanner-section" style="display: none; flex-direction: column; flex: 1; justify-content: center; align-items: center; padding: 40px 10px;">
+                <h3 class="font-mono text-xs">Armonización de Estructuras Curriculares:</h3>
+                <div class="laser-sweep-container">
+                  <div class="laser-sweep-line"></div>
+                  <span class="scanning-label font-mono">Simulando Extracción y Armonización IA...</span>
+                </div>
+                <div class="terminal-console" id="mgr-log-terminal" style="width: 100%; margin-top: 14px; max-height: 300px;">
+                  <!-- Logs -->
+                </div>
+              </div>
+
+              <!-- Report Results View -->
+              <div class="ai-report-view" id="mgr-report-view" style="display: none; flex-direction: column; flex: 1; min-height: 0; padding-top: 12px;">
+                <div class="alignment-score-container" style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                  <div>
+                    <h3 id="mgr-report-program-title" style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">Técnico en Ciberseguridad</h3>
+                    <p style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">Criterios armonizados por asignatura basados en el catálogo</p>
+                  </div>
+                  <span class="drawer-tag bg-ai-tag">Plan Armonizado</span>
+                </div>
+
+                <div class="manager-results-scroll" id="mgr-results-container" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 14px; padding-right: 4px; min-height: 0;">
+                  <!-- Subject-grouped cards -->
+                </div>
+
+                <div class="drawer-footer" style="padding: 14px 0; border-top: 1px solid var(--border-color); display: flex;">
+                  <button id="mgr-save-btn" class="sleek-btn-success" style="width: 100%; justify-content: center; padding: 12px; font-size: 0.85rem; font-weight: 600;">
+                    <span>💾 Guardar Plan Curricular y Habilitar en Roster Docente</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+  <!-- Slide-out Drawer: Teacher Review Dispute Panel -->
+  <div class="drawer-overlay" id="appeal-drawer-overlay"></div>
+  <div class="slide-drawer" id="appeal-drawer" role="dialog" aria-modal="true" aria-labelledby="appeal-drawer-title">
+    <div class="drawer-header">
+      <div class="drawer-title-group">
+        <span class="drawer-tag">Workflow 1 Panel</span>
+        <h2 id="appeal-drawer-title">Grade Appeal Request</h2>
+      </div>
+      <button class="drawer-close-btn" id="appeal-drawer-close">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    
+    <div class="drawer-content">
+      <!-- Dispute Card Details -->
+      <div class="appeal-meta-card">
+        <div class="meta-row">
+          <span class="meta-label">Estudiante:</span>
+          <span class="meta-value font-semibold" id="appeal-student-name">Alexander Wright</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">MNC Competencia:</span>
+          <span class="meta-value font-mono bg-dark" id="appeal-criterion-code">C1: Syntactic Correctness</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Milestone Evidencia:</span>
+          <span class="meta-value font-semibold" id="appeal-event-name">Event 1</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">Token de Re-evaluación:</span>
+          <span class="token-container" id="appeal-student-tokens">
+            <!-- Filled dynamically with token nodes -->
+          </span>
+        </div>
+      </div>
+      
+      <!-- Student's Written Case -->
+      <div class="defense-evidence-section">
+        <h3>Sustentación Técnica de Estudiante</h3>
+        <blockquote class="defense-blockquote" id="appeal-defense-text">
+          "The compiled program ran without warnings under manual environment variables. My local test coverage was at 92%, proving syntactical correctness."
+        </blockquote>
+      </div>
+
+      <div class="appeal-rules-reminder">
+        <h4>Consecuencias de la Decisión:</h4>
+        <ul>
+          <li><strong>Aprobar Apelación:</strong> La celda cambia a <strong class="text-success">Met (✅)</strong> permanentemente. Se reembolsa el token al estudiante y se recalcula la nota.</li>
+          <li><strong>Mantener Calificación:</strong> La celda se mantiene en <strong class="text-danger">Not Met (❌)</strong>. El token se <strong class="text-danger">consume permanentemente</strong> y la disputa se cierra.</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="drawer-footer">
+      <button id="appeal-btn-maintain" class="sleek-btn-danger flex-1">
+        <span>Mantener Calificación (❌)</span>
+      </button>
+      <button id="appeal-btn-approve" class="sleek-btn-success flex-1">
+        <span>Aprobar Apelación (✅)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Floating Student Simulator Panel Dock (Bottom Left) - Restored! -->
+  <div class="student-simulator-dock" id="student-simulator-dock">
+    <div class="simulator-toggle-header" id="simulator-toggle-header">
+      <div class="sim-header-label">
+        <span class="sim-avatar">🎓</span>
+        <div class="sim-title-texts">
+          <h3>Student Portal Simulator</h3>
+          <span id="simulator-active-student-sub">Alexander Wright (Selected)</span>
+        </div>
+      </div>
+      <div class="sim-controls">
+        <span class="sim-tag font-mono">Workflow 1 Trigger</span>
+        <span class="toggle-icon" id="sim-arrow">▲</span>
+      </div>
+    </div>
+    
+    <!-- Expanded simulator controls -->
+    <div class="simulator-body" id="simulator-body">
+      <div class="simulator-selectors">
+        <div class="control-group flex-1">
+          <label for="sim-student-picker">Seleccionar Estudiante a Simular</label>
+          <select id="sim-student-picker" class="sleek-select text-sm">
+            <!-- Dynamically populated based on enrolled student roster -->
+          </select>
+        </div>
+      </div>
+
+      <!-- Simulated Grade Screen -->
+      <div class="sim-phone-screen">
+        <div class="sim-screen-header">
+          <span class="sim-screen-title font-mono" id="sim-screen-title">Alex's Student View</span>
+          <span class="sim-screen-token-count" id="sim-screen-token-display">Tokens: 🪙🪙🪙</span>
+        </div>
+        
+        <div class="sim-screen-content">
+          <div class="sim-alert-banner">
+            <span class="banner-title">Grade Rejection Portal</span>
+            <p>Select any "Not Met" (❌) criterion from your current milestones to file a formal appeal using a re-evaluation token.</p>
+          </div>
+          
+          <h4 class="sim-section-header">Your Competency Evaluation Checklist</h4>
+          <div class="sim-criteria-list" id="sim-checklist-container">
+            <!-- Dynamically filled with student's view of active competencies and dispute trigger buttons -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Creation Dialogs: Add Event -->
+  <dialog class="custom-dialog" id="dialog-add-event">
+    <form method="dialog" class="dialog-form">
+      <div class="dialog-header">
+        <h3>Create Evaluation Event</h3>
+      </div>
+      <div class="dialog-body">
+        <div class="input-field">
+          <label for="new-event-name">Event Name / Milestone</label>
+          <input type="text" id="new-event-name" required placeholder="e.g. Event 4: Practical Exam" class="sleek-input">
+        </div>
+        <p class="dialog-help">Creating a new event will let you activate a subset of MNC criteria and evaluate students on this specific milestone.</p>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="sleek-btn-secondary" id="close-add-event-btn">Cancel</button>
+        <button type="submit" class="sleek-btn-primary" id="confirm-add-event-btn">Create Event</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Dispute Submission Modal Form (for simulator) -->
+  <dialog class="custom-dialog" id="dialog-submit-dispute">
+    <form method="dialog" class="dialog-form">
+      <div class="dialog-header">
+        <span class="dialog-badge bg-danger">1 Token Required</span>
+        <h3>File Formal Grade Appeal</h3>
+      </div>
+      <div class="dialog-body">
+        <div class="dispute-warning">
+          <p>You are submitting a grade appeal for competency <strong id="dispute-modal-criterion">C1</strong> in <strong id="dispute-modal-event">Event 1</strong>. This will deduct <strong>1 Re-evaluation Token</strong> from your profile balance.</p>
+        </div>
+        <div class="input-field">
+          <label for="dispute-defense-input">Technical Defense Evidence (Sustentación Técnica)</label>
+          <textarea id="dispute-defense-input" required placeholder="Outline why your solution complies with the binary specifications. Provide code evidence, environment constraints, or output trace outputs." class="sleek-textarea" rows="4"></textarea>
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button type="button" class="sleek-btn-secondary" id="close-dispute-btn">Cancel</button>
+        <button type="submit" class="sleek-btn-primary bg-danger-gradient" id="confirm-dispute-btn">Spend Token & Submit</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- JavaScript file -->
+  <script src="app.js"></script>
+</body>
+</html>

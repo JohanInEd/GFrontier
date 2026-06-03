@@ -1,0 +1,56 @@
+========================================================================
+MINISTERIO DE EDUCACIÓN - MARCO NACIONAL DE CUALIFICACIONES DE COLOMBIA
+Ficha Técnica Oficial de Competencias y Criterios de Desempeño
+========================================================================
+
+CÓDIGO DE CUALIFICACIÓN: MNC-TEC-DSAM-2026
+NIVEL DE CUALIFICACIÓN: Nivel 3 (Técnico Laboral)
+PROGRAMA DE FORMACIÓN: Técnico en Desarrollo de software y aplicaciones móviles
+SECTOR ACADÉMICO: Tecnologías de la Información y las Comunicaciones
+
+------------------------------------------------------------------------
+DESCRIPCIÓN DE LA COMPETENCIA COMPARTIDA:
+Asignatura de Razonamiento cuantitativo (Código transversal: 240201528)
+------------------------------------------------------------------------
+
+A continuación se detallan los Criterios de Desempeño y Competencias
+obligatorias, especializadas y transversales que rigen la evaluación técnica:
+
+[CLAVE: Core]
+CÓDIGO: C1
+COMPETENCIA: Modelamiento Algebraico
+DESCRIPCIÓN: Modelar expresiones algebraicas y lógicas para el diseño de algoritmos de software eficientes y estructurados.
+
+[CLAVE: Core]
+CÓDIGO: C2
+COMPETENCIA: Lógica Booleana
+DESCRIPCIÓN: Resolver operaciones de tablas de verdad y lógica binaria para el control de flujos y compuertas lógicas condicionales.
+
+[CLAVE: Core]
+CÓDIGO: C3
+COMPETENCIA: Complejidad Computacional
+DESCRIPCIÓN: Calcular la complejidad temporal básica (Notación Big-O) de bucles y estructuras algorítmicas de código.
+
+[CLAVE: Advanced]
+CÓDIGO: A1
+COMPETENCIA: Geometría de Pantalla
+DESCRIPCIÓN: Modelar planos de coordenadas cartesianas para el posicionamiento de layouts y layouts móviles, incluyendo georreferenciación GPS.
+
+[CLAVE: Advanced]
+CÓDIGO: A2
+COMPETENCIA: Analítica de Rendimiento
+DESCRIPCIÓN: Representar y analizar estadísticamente latencias, tiempos de respuesta de servidores y rendimientos de red.
+
+[CLAVE: Transversal]
+CÓDIGO: T1
+COMPETENCIA: Documentación Matemática
+DESCRIPCIÓN: Redactar reportes técnicos de análisis métricos y estimaciones cuantitativas con lenguaje asertivo y estructurado.
+
+[CLAVE: Transversal]
+CÓDIGO: T2
+COMPETENCIA: Depuración Colaborativa
+DESCRIPCIÓN: Colaborar colectivamente en la corrección lógica de fallas matemáticas y algebraicas en bloques de código y testing.
+
+========================================================================
+FIN DE DOCUMENTO - REGISTRO OFICIAL MNC COLOMBIA
+========================================================================

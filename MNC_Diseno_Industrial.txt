@@ -1,0 +1,56 @@
+========================================================================
+MINISTERIO DE EDUCACIÓN - MARCO NACIONAL DE CUALIFICACIONES DE COLOMBIA
+Ficha Técnica Oficial de Competencias y Criterios de Desempeño
+========================================================================
+
+CÓDIGO DE CUALIFICACIÓN: MNC-TEC-DIMO-2026
+NIVEL DE CUALIFICACIÓN: Nivel 3 (Técnico Laboral)
+PROGRAMA DE FORMACIÓN: Técnico en Diseño industrial y modelado de objetos
+SECTOR ACADÉMICO: Manufactura, Diseño y Construcción
+
+------------------------------------------------------------------------
+DESCRIPCIÓN DE LA COMPETENCIA COMPARTIDA:
+Asignatura de Razonamiento cuantitativo (Código transversal: 240201528)
+------------------------------------------------------------------------
+
+A continuación se detallan los Criterios de Desempeño y Competencias
+obligatorias, especializadas y transversales que rigen la evaluación técnica:
+
+[CLAVE: Core]
+CÓDIGO: C1
+COMPETENCIA: Modelamiento de Cotas
+DESCRIPCIÓN: Calcular y acotar dimensiones físicas tridimensionales de objetos de acuerdo con el sistema métrico internacional.
+
+[CLAVE: Core]
+CÓDIGO: C2
+COMPETENCIA: Resistencia de Materiales
+DESCRIPCIÓN: Resolver ecuaciones mecánicas básicas de tracción, elasticidad, compresión y torsión de estructuras sólidas.
+
+[CLAVE: Core]
+CÓDIGO: C3
+COMPETENCIA: Geometría Descriptiva
+DESCRIPCIÓN: Modelar proyecciones axonométricas, vistas ortogonales y desarrollos planos de figuras geométricas complejas.
+
+[CLAVE: Advanced]
+CÓDIGO: A1
+COMPETENCIA: Simulación de Esfuerzos
+DESCRIPCIÓN: Calcular y optimizar puntos de fatiga estructural y deformación de componentes mediante simulaciones CAD cuantitativas.
+
+[CLAVE: Advanced]
+CÓDIGO: A2
+COMPETENCIA: Antropometría Cuantitativa
+DESCRIPCIÓN: Analizar distribuciones estadísticas de percentiles humanos para diseños adaptativos y ergonomía utilitaria.
+
+[CLAVE: Transversal]
+CÓDIGO: T1
+COMPETENCIA: Registro de Materiales
+DESCRIPCIÓN: Documentar cuantitativamente presupuestos, listas de materiales (BOM) y costos de prototipado rápido en bitácoras.
+
+[CLAVE: Transversal]
+CÓDIGO: T2
+COMPETENCIA: Ensamble Integrado
+DESCRIPCIÓN: Coordinar colectivamente en equipo la corrección geométrica de planos y el acoplamiento dimensional de piezas.
+
+========================================================================
+FIN DE DOCUMENTO - REGISTRO OFICIAL MNC COLOMBIA
+========================================================================

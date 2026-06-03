@@ -1,0 +1,56 @@
+========================================================================
+MINISTERIO DE EDUCACIÓN - MARCO NACIONAL DE CUALIFICACIONES DE COLOMBIA
+Ficha Técnica Oficial de Competencias y Criterios de Desempeño
+========================================================================
+
+CÓDIGO DE CUALIFICACIÓN: MNC-TEC-DMGG-2026
+NIVEL DE CUALIFICACIÓN: Nivel 3 (Técnico Laboral)
+PROGRAMA DE FORMACIÓN: Técnico en Desarrollo multimedia y comunicación gráfica
+SECTOR ACADÉMICO: Industrias Creativas y Comunicación Gráfica
+
+------------------------------------------------------------------------
+DESCRIPCIÓN DE LA COMPETENCIA COMPARTIDA:
+Asignatura de Razonamiento cuantitativo (Código transversal: 240201528)
+------------------------------------------------------------------------
+
+A continuación se detallan los Criterios de Desempeño y Competencias
+obligatorias, especializadas y transversales que rigen la evaluación técnica:
+
+[CLAVE: Core]
+CÓDIGO: C1
+COMPETENCIA: Proporciones y Ratios
+DESCRIPCIÓN: Calcular relaciones de aspecto (aspect ratio) y escalas proporcionales para encuadres gráficos y composiciones.
+
+[CLAVE: Core]
+CÓDIGO: C2
+COMPETENCIA: Vectores y Transformaciones
+DESCRIPCIÓN: Resolver operaciones vectoriales básicas para traslaciones y rotaciones gráficas de sprites en planos 2D y 3D.
+
+[CLAVE: Core]
+CÓDIGO: C3
+COMPETENCIA: Tasas de Transferencia (Bitrate)
+DESCRIPCIÓN: Calcular tasas de compresión multimedia, frecuencias de muestreo de audio/video y cuadros por segundo para streaming.
+
+[CLAVE: Advanced]
+CÓDIGO: A1
+COMPETENCIA: Física de Iluminación
+DESCRIPCIÓN: Modelar matemáticamente la incidencia, reflexión y refracción de luz en motores de renderizado 2D/3D.
+
+[CLAVE: Advanced]
+CÓDIGO: A2
+COMPETENCIA: Analítica de Interfaces (UX)
+DESCRIPCIÓN: Analizar cuantitativamente métricas de usabilidad de plataformas web y multimedia (tiempos y rebotes).
+
+[CLAVE: Transversal]
+CÓDIGO: T1
+COMPETENCIA: Sustentación Técnica
+DESCRIPCIÓN: Presentar informes técnicos cuantitativos de bitrates, compresión y pesos de archivos de assets de acuerdo con las especificaciones de calidad.
+
+[CLAVE: Transversal]
+CÓDIGO: T2
+COMPETENCIA: Optimización de Recursos
+DESCRIPCIÓN: Resolver de forma autónoma problemas de compresión y optimización de pesos y dimensiones de assets.
+
+========================================================================
+FIN DE DOCUMENTO - REGISTRO OFICIAL MNC COLOMBIA
+========================================================================
