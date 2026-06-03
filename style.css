@@ -182,11 +182,13 @@ body {
 /* 3a. Top Global Header styling */
 .app-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
-  padding: 0 24px;
+  padding: 0 24px 12px 24px;
+  height: 70px;
+  box-sizing: border-box;
   z-index: 10;
 }
 
@@ -1860,6 +1862,7 @@ body {
   }
   .app-header {
     flex-direction: column;
+    align-items: stretch;
     height: auto;
     padding: 16px;
     gap: 16px;
