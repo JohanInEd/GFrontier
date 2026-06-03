@@ -253,26 +253,24 @@ const DOM = {
   appealBtnMaintain: document.getElementById("appeal-btn-maintain"),
   appealBtnApprove: document.getElementById("appeal-btn-approve"),
   
-  // Student Portal Simulator Dock (Bottom Left)
-  studentSimulatorDock: document.getElementById("student-simulator-dock"),
-  simulatorToggleHeader: document.getElementById("simulator-toggle-header"),
-  simulatorActiveStudentSub: document.getElementById("simulator-active-student-sub"),
+  // Student Portal Simulator
+  tabBtnStudent: document.getElementById("tab-btn-student"),
+  viewStudentSimulator: document.getElementById("view-student-simulator"),
   simStudentPicker: document.getElementById("sim-student-picker"),
-  simScreenTitle: document.getElementById("sim-screen-title"),
   simScreenTokenDisplay: document.getElementById("sim-screen-token-display"),
   simChecklistContainer: document.getElementById("sim-checklist-container"),
-  simArrow: document.getElementById("sim-arrow"),
+  simScreenTitle: document.getElementById("sim-screen-title"),
+  simAppealEmptyState: document.getElementById("sim-appeal-empty-state"),
+  simAppealFormContainer: document.getElementById("sim-appeal-form-container"),
+  simAppealCritName: document.getElementById("sim-appeal-crit-name"),
+  simAppealEventName: document.getElementById("sim-appeal-event-name"),
+  simAppealDefenseInput: document.getElementById("sim-appeal-defense-input"),
+  simAppealCancelBtn: document.getElementById("sim-appeal-cancel-btn"),
+  formSubmitAppeal: document.getElementById("form-submit-appeal"),
   
   dialogAddEvent: document.getElementById("dialog-add-event"),
   newEventName: document.getElementById("new-event-name"),
   closeAddEventBtn: document.getElementById("close-add-event-btn"),
-  
-  dialogSubmitDispute: document.getElementById("dialog-submit-dispute"),
-  disputeModalCriterion: document.getElementById("dispute-modal-criterion"),
-  disputeModalEvent: document.getElementById("dispute-modal-event"),
-  disputeDefenseInput: document.getElementById("dispute-defense-input"),
-  closeDisputeBtn: document.getElementById("close-dispute-btn"),
-  confirmDisputeBtn: document.getElementById("confirm-dispute-btn"),
 
   // Phase 2 DOM Elements
   aiAnalyzerToggleBtn: document.getElementById("ai-analyzer-toggle-btn"),
@@ -1144,8 +1142,9 @@ function renderStudentSimulator() {
   
   if (!student) return;
   
-  DOM.simulatorActiveStudentSub.textContent = `${student.name} (Matriculado en ${sName})`;
-  DOM.simScreenTitle.textContent = `${student.name.split(" ")[0]}'s MNC View`;
+  if (DOM.simScreenTitle) {
+    DOM.simScreenTitle.textContent = `Competencias de ${student.name}`;
+  }
   
   // Emojis tokens
   let tokensHTML = "";
@@ -1212,7 +1211,7 @@ function renderStudentSimulator() {
     const btn = row.querySelector(".sim-chk-btn-appeal");
     if (btn) {
       btn.addEventListener("click", () => {
-        openSubmitDisputeModal(student.id, critId, evName);
+        openStudentAppealForm(student.id, critId, evName);
       });
     }
     
@@ -1305,14 +1304,23 @@ function toggleConfigCriterion(critId, eventId) {
 /**
  * Workflow 1 - Launch Student Appeal Modal
  */
-function openSubmitDisputeModal(studentId, critId, eventId) {
+function openStudentAppealForm(studentId, critId, eventId) {
   activeStudentAppeal = { studentId, criterionId: critId, eventId };
   
-  DOM.disputeModalCriterion.textContent = critId;
-  DOM.disputeModalEvent.textContent = eventId;
-  DOM.disputeDefenseInput.value = "";
+  const pName = localState.data.selectedProgram;
+  const sName = localState.data.selectedSignature;
+  const currentSignature = localState.data.programs[pName].signatures[sName];
+  const crit = currentSignature.criteria[critId];
   
-  DOM.dialogSubmitDispute.showModal();
+  if (DOM.simAppealCritName) DOM.simAppealCritName.textContent = `${critId}: ${crit.name}`;
+  if (DOM.simAppealEventName) DOM.simAppealEventName.textContent = eventId;
+  if (DOM.simAppealDefenseInput) {
+    DOM.simAppealDefenseInput.value = "";
+    DOM.simAppealDefenseInput.focus();
+  }
+  
+  if (DOM.simAppealEmptyState) DOM.simAppealEmptyState.style.display = "none";
+  if (DOM.simAppealFormContainer) DOM.simAppealFormContainer.style.display = "flex";
 }
 
 /**
@@ -1339,7 +1347,10 @@ function submitStudentDispute(defenseText) {
   };
   
   activeStudentAppeal = null;
-  DOM.dialogSubmitDispute.close();
+  
+  if (DOM.simAppealFormContainer) DOM.simAppealFormContainer.style.display = "none";
+  if (DOM.simAppealEmptyState) DOM.simAppealEmptyState.style.display = "flex";
+  
   refreshUI();
 }
 
@@ -1672,11 +1683,13 @@ function switchWorkspaceTab(tabName) {
   DOM.tabBtnGrading.classList.remove("active");
   DOM.tabBtnMncSuite.classList.remove("active");
   if (DOM.tabBtnManagerSuite) DOM.tabBtnManagerSuite.classList.remove("active");
+  if (DOM.tabBtnStudent) DOM.tabBtnStudent.classList.remove("active");
 
   DOM.viewDashboard.classList.remove("active");
   DOM.viewGrading.classList.remove("active");
   DOM.viewMncSuite.classList.remove("active");
   if (DOM.viewManagerSuite) DOM.viewManagerSuite.classList.remove("active");
+  if (DOM.viewStudentSimulator) DOM.viewStudentSimulator.classList.remove("active");
 
   if (tabName === "dashboard") {
     DOM.tabBtnDashboard.classList.add("active");
@@ -1696,6 +1709,10 @@ function switchWorkspaceTab(tabName) {
     if (DOM.tabBtnManagerSuite) DOM.tabBtnManagerSuite.classList.add("active");
     if (DOM.viewManagerSuite) DOM.viewManagerSuite.classList.add("active");
     renderManagerSubjectsChecklist();
+  } else if (tabName === "student-simulator") {
+    if (DOM.tabBtnStudent) DOM.tabBtnStudent.classList.add("active");
+    if (DOM.viewStudentSimulator) DOM.viewStudentSimulator.classList.add("active");
+    renderStudentSimulator();
   }
 }
 
@@ -2266,15 +2283,32 @@ function initializeEvents() {
     }
   });
   
-  // Collapsible Simulator Drawer Toggle
-  DOM.simulatorToggleHeader.addEventListener("click", () => {
-    DOM.studentSimulatorDock.classList.toggle("expanded");
-  });
-  
   // Student Picker in Simulator
   DOM.simStudentPicker.addEventListener("change", () => {
     renderStudentSimulator();
   });
+  
+  // Cancel Student Appeal Form
+  if (DOM.simAppealCancelBtn) {
+    DOM.simAppealCancelBtn.addEventListener("click", () => {
+      if (DOM.simAppealFormContainer) DOM.simAppealFormContainer.style.display = "none";
+      if (DOM.simAppealEmptyState) DOM.simAppealEmptyState.style.display = "flex";
+      activeStudentAppeal = null;
+    });
+  }
+  
+  // Submit Student Appeal Form
+  if (DOM.formSubmitAppeal) {
+    DOM.formSubmitAppeal.addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (DOM.simAppealDefenseInput) {
+        const defense = DOM.simAppealDefenseInput.value.trim();
+        if (defense) {
+          submitStudentDispute(defense);
+        }
+      }
+    });
+  }
   
   // Close Appeal Drawer
   DOM.appealDrawerClose.addEventListener("click", closeAppealDrawer);
@@ -2313,27 +2347,20 @@ function initializeEvents() {
       refreshUI();
     }
   });
-  
-  // Dialog: Dispute Appeal Submit
-  DOM.closeDisputeBtn.addEventListener("click", () => DOM.dialogSubmitDispute.close());
-  DOM.dialogSubmitDispute.querySelector("form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    const defense = DOM.disputeDefenseInput.value.trim();
-    if (defense) {
-      submitStudentDispute(defense);
-    }
-  });
 
   // ==========================================
   // --- Workspace Tabs Navigation Event Listeners ---
   // ==========================================
 
-  // Workspace Primary Tabs toggling (Dashboard vs Calificaciones vs Suite MNC vs Suite Gerencia)
+  // Workspace Primary Tabs toggling (Dashboard vs Calificaciones vs Suite MNC vs Suite Gerencia vs Vista Estudiante)
   DOM.tabBtnDashboard.addEventListener("click", () => switchWorkspaceTab("dashboard"));
   DOM.tabBtnGrading.addEventListener("click", () => switchWorkspaceTab("grading"));
   DOM.tabBtnMncSuite.addEventListener("click", () => switchWorkspaceTab("mnc-suite"));
   if (DOM.tabBtnManagerSuite) {
     DOM.tabBtnManagerSuite.addEventListener("click", () => switchWorkspaceTab("manager-suite"));
+  }
+  if (DOM.tabBtnStudent) {
+    DOM.tabBtnStudent.addEventListener("click", () => switchWorkspaceTab("student-simulator"));
   }
 
   // Dashboard Bottleneck quick link redirect
