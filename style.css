@@ -273,6 +273,7 @@ body {
 .select-btn-group {
   display: flex;
   gap: 4px;
+  align-items: stretch;
 }
 
 .header-icon-btn {
