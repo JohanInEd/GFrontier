@@ -173,7 +173,7 @@ body {
    ========================================== */
 .app-shell {
   display: grid;
-  grid-template-rows: 70px 52px 1fr;
+  grid-template-rows: auto 52px 1fr;
   height: 100vh;
   width: 100vw;
   overflow: hidden;
@@ -186,8 +186,10 @@ body {
   justify-content: space-between;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-color);
-  padding: 0 24px 12px 24px;
-  height: 70px;
+  padding: 10px 24px 12px 24px;
+  min-height: 70px;
+  height: auto;
+  flex-wrap: wrap;
   box-sizing: border-box;
   z-index: 10;
 }
@@ -2959,6 +2961,17 @@ body {
   }
   #event-selector {
     width: 140px !important;
+  }
+}
+
+/* Hide utility button text on medium/narrow screens to prevent wrapping and height overflow */
+@media (max-width: 1200px) {
+  .utility-btn span {
+    display: none;
+  }
+  .utility-btn {
+    padding: 8px;
+    justify-content: center;
   }
 }
 
