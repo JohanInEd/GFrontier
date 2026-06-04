@@ -61,13 +61,7 @@
       
       <!-- Theme & Reset Utilities -->
       <div class="header-utilities">
-        <button id="ai-analyzer-toggle-btn" class="utility-btn btn-ai-glow" title="AI Qualifications Analyzer">
-          <svg class="ai-orb" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m11.314 11.314l.707-.707" />
-            <circle cx="12" cy="12" r="4" />
-          </svg>
-          <span>AI MNC Extractor</span>
-        </button>
+
         <button id="theme-toggle" class="utility-btn" title="Toggle Light/Dark Theme">
           <svg class="theme-icon-dark" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
@@ -367,6 +361,22 @@
                 <div class="legend-item"><span class="legend-dot status-met">✅</span> Met</div>
                 <div class="legend-item"><span class="legend-dot status-notmet">❌</span> Not Met</div>
                 <div class="legend-item"><span class="legend-dot status-disputed">⛔</span> Disputed</div>
+              </div>
+            </div>
+
+            <!-- Active Criterion Inspector Panel -->
+            <div class="matrix-inspector" id="matrix-criterion-inspector">
+              <div id="inspector-placeholder">
+                <span>ℹ️</span>
+                <span>Haga clic en cualquier código de criterio en la cabecera de la matriz para ver el detalle del MNC e indicadores evaluados.</span>
+              </div>
+              <div id="inspector-content" style="display: none;">
+                <div class="inspector-top-row font-mono">
+                  <span id="inspector-code-type" class="cat-badge">C1 • Core</span>
+                  <span id="inspector-element">Elemento General de Desempeño</span>
+                </div>
+                <div id="inspector-name">Nombre de la Competencia</div>
+                <div id="inspector-desc">Descripción del estándar y aspecto a mejorar.</div>
               </div>
             </div>
 

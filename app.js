@@ -2397,7 +2397,9 @@ function initializeEvents() {
   // ==========================================
 
   // Toggle buttons switch to MNC AI tab
-  DOM.aiAnalyzerToggleBtn.addEventListener("click", openAIDrawer);
+  if (DOM.aiAnalyzerToggleBtn) {
+    DOM.aiAnalyzerToggleBtn.addEventListener("click", openAIDrawer);
+  }
 
   // Expand/collapse API Key configuration panel
   DOM.aiKeyToggleHeader.addEventListener("click", () => {
