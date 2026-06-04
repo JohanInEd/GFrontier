@@ -1603,10 +1603,15 @@ function submitStudentDispute(defenseText) {
   const sName = localState.data.selectedSignature;
   const currentSignature = localState.data.programs[pName].signatures[sName];
   const student = currentSignature.students.find(s => s.id === studentId);
-  
-  if (student && student.tokens > 0) {
-    student.tokens--;
+  const evaluations = localState.data.evaluations;
+  const cellEval = evaluations[key] || { state: "Pending" };
+
+  if (!student || student.tokens <= 0 || cellEval.state !== "Not Met") {
+    alert("No es posible radicar la apelación. Verifique sus tokens o el estado del criterio.");
+    return;
   }
+  
+  student.tokens--;
   
   // Transition cell to Disputed with justification
   localState.data.evaluations[key] = {
@@ -1980,7 +1985,34 @@ function switchWorkspaceTab(tabName) {
   } else if (tabName === "student-simulator") {
     if (DOM.tabBtnStudent) DOM.tabBtnStudent.classList.add("active");
     if (DOM.viewStudentSimulator) DOM.viewStudentSimulator.classList.add("active");
+    switchStudentTab("dashboard");
     renderStudentSimulator();
+  }
+}
+
+function switchStudentTab(tabName) {
+  const tabBtns = document.querySelectorAll(".student-tab-btn");
+  tabBtns.forEach(btn => {
+    if (btn.dataset.studentTab === tabName) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
+
+  if (DOM.studentDashboardPanel) {
+    if (tabName === "dashboard") {
+      DOM.studentDashboardPanel.classList.add("active");
+    } else {
+      DOM.studentDashboardPanel.classList.remove("active");
+    }
+  }
+  if (DOM.studentCompetenciesPanel) {
+    if (tabName === "competencies") {
+      DOM.studentCompetenciesPanel.classList.add("active");
+    } else {
+      DOM.studentCompetenciesPanel.classList.remove("active");
+    }
   }
 }
 
@@ -2551,6 +2583,14 @@ function initializeEvents() {
     }
   });
   
+  // Student Portal Sub-Tabs
+  if (DOM.studentTabDashboard) {
+    DOM.studentTabDashboard.addEventListener("click", () => switchStudentTab("dashboard"));
+  }
+  if (DOM.studentTabCompetencies) {
+    DOM.studentTabCompetencies.addEventListener("click", () => switchStudentTab("competencies"));
+  }
+
   // Student Picker in Simulator
   DOM.simStudentPicker.addEventListener("change", () => {
     activeStudentAppeal = null;
