@@ -310,6 +310,7 @@ const DOM = {
   simAppealDefenseInput: document.getElementById("sim-appeal-defense-input"),
   simAppealCancelBtn: document.getElementById("sim-appeal-cancel-btn"),
   formSubmitAppeal: document.getElementById("form-submit-appeal"),
+  simMyAppealsList: document.getElementById("sim-my-appeals-list"),
   
   // Student Portal Sub-Tabs
   studentTabDashboard: document.getElementById("student-tab-dashboard"),
@@ -1527,6 +1528,70 @@ function renderStudentSimulator() {
     
     DOM.simChecklistContainer.appendChild(row);
   });
+
+  // --- Render Appeals History for Active Student ---
+  if (DOM.simMyAppealsList) {
+    DOM.simMyAppealsList.innerHTML = "";
+    const activeAppeals = [];
+
+    // Loop through all evaluations to find Disputed ones belonging to this student
+    Object.keys(evaluations).forEach(key => {
+      const parts = key.split("_");
+      if (parts.length >= 3 && parts[0] === student.id) {
+        const cellEval = evaluations[key];
+        if (cellEval && cellEval.state === "Disputed") {
+          const critId = parts[1];
+          const eventItemName = parts.slice(2).join("_");
+          const crit = currentSignature.criteria[critId];
+          if (crit) {
+            activeAppeals.push({
+              key: key,
+              critId: critId,
+              critName: crit.name.split(":")[0],
+              event: eventItemName,
+              defenseText: cellEval.defenseText || "Sin justificación."
+            });
+          }
+        }
+      }
+    });
+
+    if (activeAppeals.length === 0) {
+      DOM.simMyAppealsList.innerHTML = `
+        <div style="text-align: center; padding: 16px; color: var(--text-secondary); font-size: 0.72rem; font-style: italic;">
+          No tienes apelaciones radicadas activas para este módulo.
+        </div>
+      `;
+    } else {
+      activeAppeals.forEach(appeal => {
+        const item = document.createElement("div");
+        item.className = "sim-my-appeal-item";
+        item.style.backgroundColor = "var(--bg-primary)";
+        item.style.border = "1px solid var(--border-color)";
+        item.style.borderRadius = "var(--radius-sm)";
+        item.style.padding = "10px";
+        item.style.fontSize = "0.72rem";
+        item.style.display = "flex";
+        item.style.flexDirection = "column";
+        item.style.gap = "4px";
+        item.style.marginBottom = "8px";
+        
+        item.innerHTML = `
+          <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--text-primary); align-items: center;">
+            <span>⛔ ${appeal.critId} - ${appeal.critName}</span>
+            <span class="badge" style="background-color: var(--bg-purple-soft); color: var(--color-disputed); border: 1px solid rgba(168, 85, 247, 0.15); padding: 1px 4px; border-radius: 3px; font-size: 0.62rem; text-transform: uppercase; font-weight: 700;">Apelado</span>
+          </div>
+          <div style="font-size: 0.65rem; color: var(--text-muted);">
+            <span>Evidencia: ${appeal.event}</span>
+          </div>
+          <p style="margin: 4px 0 0 0; font-style: italic; color: var(--text-secondary); line-height: 1.35; padding: 6px; background-color: var(--bg-secondary); border-radius: 4px; border-left: 2px solid var(--color-disputed); font-size: 0.7rem;">
+            "${appeal.defenseText}"
+          </p>
+        `;
+        DOM.simMyAppealsList.appendChild(item);
+      });
+    }
+  }
 }
 
 function refreshUI() {
