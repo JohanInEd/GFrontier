@@ -763,83 +763,186 @@
             </div>
           </div>
 
-          <!-- Split Portal Grid -->
-          <div class="student-portal-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; flex: 1; min-height: 0; overflow: hidden;">
-            
-            <!-- Left Pane: Checklist and Tokens -->
-            <div class="student-portal-left" style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; min-height: 0;">
-              <!-- Token status card -->
-              <div class="student-portal-card" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between;">
-                <div>
-                  <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Tokens de Re-evaluación</h3>
-                  <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">Utiliza tus tokens para sustentar criterios marcados como "No Logrado" (❌).</p>
+          <!-- Student portal view toggling sub-tabs -->
+          <div class="student-portal-tabs" style="display: flex; gap: 12px; margin-bottom: 16px; flex-shrink: 0; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+            <button id="student-tab-dashboard" class="student-tab-btn active" style="padding: 8px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;" data-student-tab="dashboard">
+              <span>📊 Mi Rendimiento</span>
+            </button>
+            <button id="student-tab-competencies" class="student-tab-btn" style="padding: 8px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;" data-student-tab="competencies">
+              <span>🎯 Competencias y Apelaciones</span>
+            </button>
+          </div>
+
+          <!-- SUB-VIEW 1: Student Dashboard -->
+          <div id="student-dashboard-panel" class="student-panel active" style="display: flex; flex-direction: column; gap: 20px; flex: 1; min-height: 0; overflow-y: auto; padding-right: 4px;">
+            <!-- Metric Cards Row -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; flex-shrink: 0;">
+              <!-- Card 1: Mi Calificación -->
+              <div class="student-portal-card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Mi Nota Actual</span>
+                  <span id="sim-dashboard-grade-status" style="font-size: 0.85rem; font-weight: 600; color: var(--color-success);">Aprobando</span>
+                  <span id="sim-dashboard-grade-detail" style="font-size: 0.7rem; color: var(--text-secondary);">Criterios Core aprobados</span>
                 </div>
-                <div class="sim-screen-token-count" id="sim-screen-token-display" style="font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--color-warning); background-color: var(--bg-warning-soft); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.15); display: flex; align-items: center; gap: 6px;">
-                  Tokens: 🪙🪙🪙
+                <span id="sim-dashboard-grade-badge" class="grade-indicator" style="font-size: 2.25rem; font-weight: 800; line-height: 1; padding: 6px 12px; border-radius: 6px;">5.0</span>
+              </div>
+              
+              <!-- Card 2: Core Progress -->
+              <div class="student-portal-card" style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Progreso Técnicas (Core)</span>
+                  <span id="sim-dashboard-core-fraction" class="font-mono" style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary);">3 / 3</span>
                 </div>
+                <div style="height: 6px; background-color: var(--bg-tertiary); border-radius: 3px; overflow: hidden; border: 1px solid var(--border-color);">
+                  <div id="sim-dashboard-core-bar" style="width: 100%; height: 100%; background-color: var(--color-success); transition: width var(--transition-slow);"></div>
+                </div>
+                <span id="sim-dashboard-core-status-text" style="font-size: 0.68rem; color: var(--text-secondary); line-height: 1.3;">¡Todas las competencias técnicas obligatorias logradas!</span>
               </div>
 
-              <!-- Competencies checklist card -->
-              <div class="student-portal-card" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); flex: 1; display: flex; flex-direction: column; min-height: 250px;">
-                <div class="sim-alert-banner" style="background-color: var(--bg-info-soft); border-left: 3px solid var(--color-info); padding: 10px 14px; border-radius: 4px; margin-bottom: 14px; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45;">
-                  <strong class="banner-title" style="color: var(--text-primary); display: block; margin-bottom: 2px;">Portal de Apelaciones Académicas</strong>
-                  Selecciona cualquier criterio en estado "No Logrado" (❌) en tu lista para abrir el formulario de sustentación técnica a la derecha.
+              <!-- Card 3: Re-evaluation Tokens -->
+              <div class="student-portal-card" style="display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  <span style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700;">Tokens Disponibles</span>
+                  <span style="font-size: 0.68rem; color: var(--text-secondary); line-height: 1.3;">Para apelaciones académicas</span>
                 </div>
-                
-                <h4 class="sim-section-header" style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; margin-bottom: 10px;" id="sim-screen-title">Lista de Competencias</h4>
-                <div class="sim-criteria-list" id="sim-checklist-container" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1;">
-                  <!-- Dynamically populated checklist -->
-                </div>
+                <span id="sim-dashboard-token-display" style="font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: var(--color-warning); background-color: var(--bg-warning-soft); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.15);">🪙🪙🪙 (3)</span>
               </div>
             </div>
 
-            <!-- Right Pane: Appeal Form -->
-            <div class="student-portal-right" style="display: flex; flex-direction: column; overflow-y: auto; min-height: 0;">
-              
-              <!-- Empty state placeholder -->
-              <div class="student-portal-card" id="sim-appeal-empty-state" style="background-color: var(--bg-secondary); border: 1px dashed var(--border-color); padding: 40px 20px; border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); flex: 1;">
-                <span style="font-size: 2.5rem; margin-bottom: 12px; filter: grayscale(0.2);">📝</span>
-                <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Formulario de Sustentación</h3>
-                <p style="font-size: 0.75rem; max-width: 250px; line-height: 1.45;">Haz clic en el botón <strong>"Sustentar"</strong> de cualquier competencia en estado no logrado para radicar tu apelación técnica aquí.</p>
+            <!-- Two Column Grid for Comparison & Recommendations -->
+            <div class="student-portal-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; flex: 1; min-height: 0;">
+              <!-- Left Column: Cohort Comparison -->
+              <div class="student-portal-card" style="display: flex; flex-direction: column; gap: 16px;">
+                <h4 style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin: 0;">
+                  <span>📊 Comparativa de Rendimiento Académico</span>
+                </h4>
+                <div style="display: flex; flex-direction: column; gap: 14px; flex: 1; justify-content: center;">
+                  <!-- Row 1: My Grade -->
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem;">
+                      <span style="font-weight: 600; color: var(--text-primary);">Mi Rendimiento</span>
+                      <span id="sim-comp-my-grade" class="font-mono" style="font-weight: 700; color: var(--color-info);">5.0</span>
+                    </div>
+                    <div style="height: 12px; background-color: var(--bg-tertiary); border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);">
+                      <div id="sim-comp-my-bar" style="width: 100%; height: 100%; background: linear-gradient(90deg, var(--color-info), #06b6d4); transition: width var(--transition-slow);"></div>
+                    </div>
+                  </div>
+
+                  <!-- Row 2: Cohort Avg -->
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem;">
+                      <span style="font-weight: 600; color: var(--text-secondary);">Promedio de la Cohorte</span>
+                      <span id="sim-comp-avg-grade" class="font-mono" style="font-weight: 700; color: var(--text-secondary);">3.5</span>
+                    </div>
+                    <div style="height: 12px; background-color: var(--bg-tertiary); border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);">
+                      <div id="sim-comp-avg-bar" style="width: 70%; height: 100%; background-color: var(--text-muted); transition: width var(--transition-slow);"></div>
+                    </div>
+                  </div>
+
+                  <!-- Row 3: Cohort Max -->
+                  <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.72rem;">
+                      <span style="font-weight: 600; color: var(--text-secondary);">Nota Máxima de la Cohorte</span>
+                      <span id="sim-comp-max-grade" class="font-mono" style="font-weight: 700; color: var(--color-success);">5.0</span>
+                    </div>
+                    <div style="height: 12px; background-color: var(--bg-tertiary); border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color);">
+                      <div id="sim-comp-max-bar" style="width: 100%; height: 100%; background-color: rgba(16, 185, 129, 0.4); transition: width var(--transition-slow);"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="sim-comp-standing-banner" style="padding: 10px 12px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; border: 1px solid transparent; text-align: center;">
+                  Te encuentras en el nivel promedio del grupo.
+                </div>
               </div>
 
-              <!-- Active appeal form card -->
-              <div class="student-portal-card" id="sim-appeal-form-container" style="display: none; background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); flex: 1; flex-direction: column; gap: 14px;">
-                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 4px;">
-                  <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Radicar Apelación de Nota</h3>
-                  <span class="badge font-mono text-xs" style="background-color: var(--bg-danger-soft); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.15); padding: 2px 6px; border-radius: 4px; font-weight: 700;">Costo: 1 Token</span>
+              <!-- Right Column: Recommendations -->
+              <div class="student-portal-card" style="display: flex; flex-direction: column; gap: 12px; min-height: 250px;">
+                <h4 style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin: 0;">
+                  <span>📋 Diagnóstico y Aspectos a Mejorar</span>
+                </h4>
+                <div id="sim-recommendations-list" style="display: flex; flex-direction: column; gap: 12px; overflow-y: auto; flex: 1;">
+                  <!-- Dynamic recommendations populated here -->
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 2: Student Competencies & Appeals (Original Split Grid) -->
+          <div id="student-competencies-panel" class="student-panel" style="flex: 1; min-height: 0; display: none; flex-direction: column;">
+            <div class="student-portal-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; flex: 1; min-height: 0; overflow: hidden;">
+              <!-- Left Pane: Checklist and Tokens -->
+              <div class="student-portal-left" style="display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; min-height: 0;">
+                <!-- Token status card -->
+                <div class="student-portal-card" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: space-between;">
+                  <div>
+                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Tokens de Re-evaluación</h3>
+                    <p style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">Utiliza tus tokens para sustentar criterios marcados como "No Logrado" (❌).</p>
+                  </div>
+                  <div class="sim-screen-token-count" id="sim-screen-token-display" style="font-family: var(--font-mono); font-size: 1rem; font-weight: 700; color: var(--color-warning); background-color: var(--bg-warning-soft); padding: 6px 12px; border-radius: var(--radius-sm); border: 1px solid rgba(245, 158, 11, 0.15); display: flex; align-items: center; gap: 6px;">
+                    Tokens: 🪙🪙🪙
+                  </div>
                 </div>
 
-                <div class="appeal-meta-info" style="display: flex; flex-direction: column; gap: 8px; background-color: var(--bg-primary); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm); font-size: 0.8rem;">
-                  <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--text-muted);">Competencia:</span>
-                    <span class="font-mono font-bold" id="sim-appeal-crit-name" style="color: var(--text-primary);">C1: Modelamiento Algebraico</span>
-                  </div>
-                  <div style="display: flex; justify-content: space-between;">
-                    <span style="color: var(--text-muted);">Evidencia / Hito:</span>
-                    <span class="font-semibold" id="sim-appeal-event-name" style="color: var(--text-primary);">Taller 1: Cotas y Medidas</span>
-                  </div>
-                </div>
-
-                <form id="form-submit-appeal" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
-                  <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 120px;">
-                    <label for="sim-appeal-defense-input" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Sustentación Técnica del Estudiante</label>
-                    <textarea id="sim-appeal-defense-input" required placeholder="Redacte su justificación técnica aquí. Explique cómo su solución cumple con las especificaciones del criterio, adjunte referencias de código o resultados de su prueba..." class="sleek-textarea" style="padding: 10px; font-size: 0.82rem; resize: none; font-family: var(--font-sans); flex: 1; min-height: 120px; box-sizing: border-box;"></textarea>
+                <!-- Competencies checklist card -->
+                <div class="student-portal-card" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); flex: 1; display: flex; flex-direction: column; min-height: 250px;">
+                  <div class="sim-alert-banner" style="background-color: var(--bg-info-soft); border-left: 3px solid var(--color-info); padding: 10px 14px; border-radius: 4px; margin-bottom: 14px; font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45;">
+                    <strong class="banner-title" style="color: var(--text-primary); display: block; margin-bottom: 2px;">Portal de Apelaciones Académicas</strong>
+                    Selecciona cualquier criterio en estado "No Logrado" (❌) en tu lista para abrir el formulario de sustentación técnica a la derecha.
                   </div>
                   
-                  <div style="display: flex; gap: 10px; margin-top: 4px; flex-shrink: 0;">
-                    <button type="button" class="sleek-btn-secondary" id="sim-appeal-cancel-btn" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem;">
-                      <span>Cancelar</span>
-                    </button>
-                    <button type="submit" class="sleek-btn-primary" id="sim-appeal-submit-btn" style="flex: 1.5; justify-content: center; padding: 10px; font-size: 0.85rem; background: linear-gradient(135deg, var(--color-danger), #f43f5e); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);">
-                      <span>Gastar Token & Radicar</span>
-                    </button>
+                  <h4 class="sim-section-header" style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; margin-bottom: 10px;" id="sim-screen-title">Lista de Competencias</h4>
+                  <div class="sim-criteria-list" id="sim-checklist-container" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1;">
+                    <!-- Dynamically populated checklist -->
                   </div>
-                </form>
+                </div>
               </div>
 
-            </div>
+              <!-- Right Pane: Appeal Form -->
+              <div class="student-portal-right" style="display: flex; flex-direction: column; overflow-y: auto; min-height: 0;">
+                <!-- Empty state placeholder -->
+                <div class="student-portal-card" id="sim-appeal-empty-state" style="background-color: var(--bg-secondary); border: 1px dashed var(--border-color); padding: 40px 20px; border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; color: var(--text-muted); flex: 1;">
+                  <span style="font-size: 2.5rem; margin-bottom: 12px; filter: grayscale(0.2);">📝</span>
+                  <h3 style="font-size: 0.95rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px;">Formulario de Sustentación</h3>
+                  <p style="font-size: 0.75rem; max-width: 250px; line-height: 1.45;">Haz clic en el botón <strong>"Sustentar"</strong> de cualquier competencia en estado no logrado para radicar tu apelación técnica aquí.</p>
+                </div>
 
+                <!-- Active appeal form card -->
+                <div class="student-portal-card" id="sim-appeal-form-container" style="display: none; background-color: var(--bg-secondary); border: 1px solid var(--border-color); padding: 18px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); flex: 1; flex-direction: column; gap: 14px;">
+                  <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-bottom: 4px;">
+                    <h3 style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">Radicar Apelación de Nota</h3>
+                    <span class="badge font-mono text-xs" style="background-color: var(--bg-danger-soft); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.15); padding: 2px 6px; border-radius: 4px; font-weight: 700;">Costo: 1 Token</span>
+                  </div>
+
+                  <div class="appeal-meta-info" style="display: flex; flex-direction: column; gap: 8px; background-color: var(--bg-primary); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm); font-size: 0.8rem;">
+                    <div style="display: flex; justify-content: space-between;">
+                      <span style="color: var(--text-muted);">Competencia:</span>
+                      <span class="font-mono font-bold" id="sim-appeal-crit-name" style="color: var(--text-primary);">C1: Modelamiento Algebraico</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                      <span style="color: var(--text-muted);">Evidencia / Hito:</span>
+                      <span class="font-semibold" id="sim-appeal-event-name" style="color: var(--text-primary);">Taller 1: Cotas y Medidas</span>
+                    </div>
+                  </div>
+
+                  <form id="form-submit-appeal" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+                    <div class="form-group" style="display: flex; flex-direction: column; gap: 4px; flex: 1; min-height: 120px;">
+                      <label for="sim-appeal-defense-input" class="font-mono text-xs" style="color: var(--text-muted); text-transform: uppercase;">Sustentación Técnica del Estudiante</label>
+                      <textarea id="sim-appeal-defense-input" required placeholder="Redacte su justificación técnica aquí. Explique cómo su solución cumple con las especificaciones del criterio, adjunte referencias de código o resultados de su prueba..." class="sleek-textarea" style="padding: 10px; font-size: 0.82rem; resize: none; font-family: var(--font-sans); flex: 1; min-height: 120px; box-sizing: border-box;"></textarea>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 4px; flex-shrink: 0;">
+                      <button type="button" class="sleek-btn-secondary" id="sim-appeal-cancel-btn" style="flex: 1; justify-content: center; padding: 10px; font-size: 0.85rem;">
+                        <span>Cancelar</span>
+                      </button>
+                      <button type="submit" class="sleek-btn-primary" id="sim-appeal-submit-btn" style="flex: 1.5; justify-content: center; padding: 10px; font-size: 0.85rem; background: linear-gradient(135deg, var(--color-danger), #f43f5e); box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25);">
+                        <span>Gastar Token & Radicar</span>
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
           </div>
         </main>
       </div>

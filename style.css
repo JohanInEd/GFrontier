@@ -1565,6 +1565,60 @@ body {
 /* ==========================================
    6. Student Portal View
    ========================================== */
+.student-tab-btn {
+  font-family: var(--font-sans);
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 8px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.student-tab-btn:hover {
+  color: var(--text-primary);
+  border-bottom-color: rgba(14, 165, 233, 0.3);
+}
+.student-tab-btn.active {
+  color: var(--color-info);
+  border-bottom-color: var(--color-info);
+}
+
+.student-panel {
+  display: none !important;
+}
+.student-panel.active {
+  display: flex !important;
+}
+
+.diagnostic-card {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color var(--transition-fast);
+}
+.diagnostic-card.warning-core {
+  border-left: 3px solid var(--color-danger);
+}
+.diagnostic-card.info-advanced {
+  border-left: 3px solid var(--color-info);
+}
+.diagnostic-card.suggest-transversal {
+  border-left: 3px solid var(--color-warning);
+}
+.diagnostic-card:hover {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+.light-theme .diagnostic-card:hover {
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
 .student-portal-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;

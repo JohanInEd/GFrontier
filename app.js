@@ -29,7 +29,7 @@ const PROGRAM_HIERARCHY = {
         events: ["Taller 1: Lógica y Algoritmos", "Evaluación 2: Complejidad", "Caso Final: Georreferenciación Móvil"],
         activeCriteriaByEvent: {
           "Taller 1: Lógica y Algoritmos": ["C1", "C2", "T1"],
-          "Evaluación 2: Complejidad": ["C1", "C2", "C3", "T1", "T2"],
+          "Evaluación 2: Complejidad": ["C1", "C2", "C3", "A1", "T1", "T2"],
           "Caso Final: Georreferenciación Móvil": ["C1", "C2", "C3", "A1", "A2", "T1", "T2"]
         }
       }
@@ -130,7 +130,7 @@ class LocalState {
   }
 
   load() {
-    const saved = localStorage.getItem("CERW_corp_state_v1");
+    const saved = localStorage.getItem("CERW_corp_state_v2");
     if (saved) {
       try {
         this.data = JSON.parse(saved);
@@ -155,7 +155,7 @@ class LocalState {
   }
 
   save() {
-    localStorage.setItem("CERW_corp_state_v1", JSON.stringify(this.data));
+    localStorage.setItem("CERW_corp_state_v2", JSON.stringify(this.data));
   }
 
   resetToDefaults() {
@@ -258,6 +258,7 @@ const DOM = {
   viewStudentSimulator: document.getElementById("view-student-simulator"),
   simStudentPicker: document.getElementById("sim-student-picker"),
   simScreenTokenDisplay: document.getElementById("sim-screen-token-display"),
+  simScreenTokenDisplayList: document.getElementById("sim-screen-token-display-list"),
   simChecklistContainer: document.getElementById("sim-checklist-container"),
   simScreenTitle: document.getElementById("sim-screen-title"),
   simAppealEmptyState: document.getElementById("sim-appeal-empty-state"),
@@ -267,6 +268,30 @@ const DOM = {
   simAppealDefenseInput: document.getElementById("sim-appeal-defense-input"),
   simAppealCancelBtn: document.getElementById("sim-appeal-cancel-btn"),
   formSubmitAppeal: document.getElementById("form-submit-appeal"),
+  
+  // Student Portal Sub-Tabs
+  studentTabDashboard: document.getElementById("student-tab-dashboard"),
+  studentTabCompetencies: document.getElementById("student-tab-competencies"),
+  studentDashboardPanel: document.getElementById("student-dashboard-panel"),
+  studentCompetenciesPanel: document.getElementById("student-competencies-panel"),
+  
+  // Student Dashboard Details
+  simDashboardGradeStatus: document.getElementById("sim-dashboard-grade-status"),
+  simDashboardGradeDetail: document.getElementById("sim-dashboard-grade-detail"),
+  simDashboardGradeBadge: document.getElementById("sim-dashboard-grade-badge"),
+  simDashboardCoreFraction: document.getElementById("sim-dashboard-core-fraction"),
+  simDashboardCoreBar: document.getElementById("sim-dashboard-core-bar"),
+  simDashboardCoreStatusText: document.getElementById("sim-dashboard-core-status-text"),
+  simDashboardTokenDisplay: document.getElementById("sim-dashboard-token-display"),
+  simCompMyGrade: document.getElementById("sim-comp-my-grade"),
+  simCompMyBar: document.getElementById("sim-comp-my-bar"),
+  simCompAvgGrade: document.getElementById("sim-comp-avg-grade"),
+  simCompAvgBar: document.getElementById("sim-comp-avg-bar"),
+  simCompMaxGrade: document.getElementById("sim-comp-max-grade"),
+  simCompMaxBar: document.getElementById("sim-comp-max-bar"),
+  simCompStandingBanner: document.getElementById("sim-comp-standing-banner"),
+  simRecommendationsList: document.getElementById("sim-recommendations-list"),
+
   
   dialogAddEvent: document.getElementById("dialog-add-event"),
   newEventName: document.getElementById("new-event-name"),
@@ -1112,6 +1137,36 @@ function renderConfiguratorPanel() {
 /**
  * Renders floating student portal simulator dock (bottom-left)
  */
+/**
+ * Action plans and specific improvements tailored for each standard MNC criterion
+ */
+function getCriterionActionPlan(critId, critName) {
+  const normalizedId = critId.toUpperCase();
+  if (normalizedId.includes("C1")) {
+    return "<strong>Acción de mejora recomendada:</strong> Practicar el modelamiento de algoritmos simples mediante pseudocódigo e identificar variables críticas de entrada/salida. Se recomienda resolver la guía de ejercicios del Hito 1 y asistir a la tutoría grupal de los martes.";
+  }
+  if (normalizedId.includes("C2")) {
+    return "<strong>Acción de mejora recomendada:</strong> Repasar las compuertas lógicas (AND, OR, NOT) y las leyes de simplificación del Álgebra de Boole. Realizar los cuestionarios de autoestudio interactivos en el aula virtual.";
+  }
+  if (normalizedId.includes("C3")) {
+    return "<strong>Acción de mejora recomendada:</strong> Estudiar la Notación Big-O, enfocándose en la diferencia entre complejidades lineales O(n), cuadráticas O(n²) y logarítmicas O(log n). Revisar la eficiencia de bucles anidados.";
+  }
+  if (normalizedId.includes("A1")) {
+    return "<strong>Acción de mejora recomendada:</strong> Repasar el cálculo de distancias y mapeo de coordenadas cartesianas en pantallas. Consultar la documentación de la API del Canvas para dibujar elementos dinámicos.";
+  }
+  if (normalizedId.includes("A2")) {
+    return "<strong>Acción de mejora recomendada:</strong> Practicar la lectura de logs de servidor y profiling de base de datos para identificar cuellos de botella en peticiones HTTP recurrentes.";
+  }
+  if (normalizedId.includes("T1")) {
+    return "<strong>Acción de mejora recomendada:</strong> Asegurar que la documentación técnica use una terminología cuantitativa clara y estructurada. Evitar descripciones subjetivas en los reportes de calidad.";
+  }
+  if (normalizedId.includes("T2")) {
+    return "<strong>Acción de mejora recomendada:</strong> Participar activamente en actividades grupales de pair programming, haciendo una comunicación asertiva durante la resolución conjunta de fallas de lógica.";
+  }
+  
+  return `<strong>Acción de mejora recomendada:</strong> Repasar el contenido de la competencia "${critName}" y consultar con el docente de la asignatura sobre los recursos de apoyo disponibles en el aula virtual.`;
+}
+
 function renderStudentSimulator() {
   const pName = localState.data.selectedProgram;
   const sName = localState.data.selectedSignature;
@@ -1141,24 +1196,237 @@ function renderStudentSimulator() {
   const student = students.find(s => s.id === currentSimStudentId);
   
   if (!student) return;
+
+  // Active Appeal Validation: Close the appeal form if the student does not have the target criterion "Not Met"
+  if (activeStudentAppeal) {
+    const { studentId, criterionId, eventId } = activeStudentAppeal;
+    const key = `${studentId}_${criterionId}_${eventId}`;
+    const cellEval = evaluations[key] || { state: "Pending" };
+    
+    if (studentId !== student.id || cellEval.state !== "Not Met") {
+      activeStudentAppeal = null;
+      if (DOM.simAppealFormContainer) DOM.simAppealFormContainer.style.display = "none";
+      if (DOM.simAppealEmptyState) DOM.simAppealEmptyState.style.display = "flex";
+    }
+  }
   
   if (DOM.simScreenTitle) {
     DOM.simScreenTitle.textContent = `Competencias de ${student.name}`;
   }
   
-  // Emojis tokens
+  // Emojis tokens display updates
   let tokensHTML = "";
   for (let i = 0; i < 3; i++) {
     tokensHTML += (i < student.tokens) ? "🪙" : "⚪";
   }
-  DOM.simScreenTokenDisplay.textContent = `Tokens: ${tokensHTML} (${student.tokens})`;
-  
-  // Checklist
+  if (DOM.simScreenTokenDisplay) {
+    DOM.simScreenTokenDisplay.textContent = `Tokens: ${tokensHTML} (${student.tokens})`;
+  }
+  if (DOM.simScreenTokenDisplayList) {
+    DOM.simScreenTokenDisplayList.textContent = `Tokens: ${tokensHTML} (${student.tokens})`;
+  }
+  if (DOM.simDashboardTokenDisplay) {
+    DOM.simDashboardTokenDisplay.textContent = `${tokensHTML} (${student.tokens})`;
+  }
+
+  // --- Dynamic Dashboard Metrics Rendering ---
+  const stGradeInfo = getStudentGradeInfo(student.id, pName, sName);
+  if (stGradeInfo) {
+    // 1. Grade Badge and Status Text
+    if (DOM.simDashboardGradeBadge) {
+      DOM.simDashboardGradeBadge.textContent = stGradeInfo.grade.toFixed(1);
+      DOM.simDashboardGradeBadge.className = "grade-indicator";
+      let gradeClass = "grade-bracket-failing";
+      if (stGradeInfo.grade >= 3.0 && stGradeInfo.grade < 4.0) gradeClass = "grade-bracket-passing";
+      else if (stGradeInfo.grade >= 4.0 && stGradeInfo.grade < 5.0) gradeClass = "grade-bracket-mastery";
+      else if (stGradeInfo.grade === 5.0) gradeClass = "grade-bracket-perfect";
+      DOM.simDashboardGradeBadge.classList.add(gradeClass);
+    }
+    
+    if (DOM.simDashboardGradeStatus) {
+      if (stGradeInfo.grade >= 3.0) {
+        DOM.simDashboardGradeStatus.textContent = "Aprobando";
+        DOM.simDashboardGradeStatus.style.color = "var(--color-met)";
+      } else {
+        DOM.simDashboardGradeStatus.textContent = "Reprobando";
+        DOM.simDashboardGradeStatus.style.color = "var(--color-notmet)";
+      }
+    }
+    
+    if (DOM.simDashboardGradeDetail) {
+      if (stGradeInfo.totalCores === 0) {
+        DOM.simDashboardGradeDetail.textContent = "Sin competencias obligatorias";
+      } else if (stGradeInfo.coresMetCount === stGradeInfo.totalCores) {
+        DOM.simDashboardGradeDetail.textContent = "Criterios Core aprobados";
+      } else {
+        DOM.simDashboardGradeDetail.textContent = `Falta(n) ${stGradeInfo.totalCores - stGradeInfo.coresMetCount} Core`;
+      }
+    }
+    
+    // 2. Core Progress Bar
+    if (DOM.simDashboardCoreFraction) {
+      DOM.simDashboardCoreFraction.textContent = `${stGradeInfo.coresMetCount} / ${stGradeInfo.totalCores}`;
+    }
+    if (DOM.simDashboardCoreBar) {
+      const corePct = stGradeInfo.totalCores > 0 ? (stGradeInfo.coresMetCount / stGradeInfo.totalCores) * 100 : 100;
+      DOM.simDashboardCoreBar.style.width = `${corePct}%`;
+    }
+    if (DOM.simDashboardCoreStatusText) {
+      if (stGradeInfo.totalCores === 0) {
+        DOM.simDashboardCoreStatusText.textContent = "No hay competencias técnicas obligatorias definidas.";
+      } else if (stGradeInfo.coresMetCount === stGradeInfo.totalCores) {
+        DOM.simDashboardCoreStatusText.textContent = "¡Todas las competencias técnicas obligatorias logradas!";
+      } else {
+        DOM.simDashboardCoreStatusText.textContent = `Falta(n) ${stGradeInfo.totalCores - stGradeInfo.coresMetCount} competencia(s) obligatoria(s) por cumplir.`;
+      }
+    }
+
+    // 3. Cohort Comparison calculations
+    const cohortGrades = students.map(s => getStudentGradeInfo(s.id, pName, sName).grade);
+    const maxGrade = Math.max(...cohortGrades);
+    const avgGrade = parseFloat((cohortGrades.reduce((sum, g) => sum + g, 0) / students.length).toFixed(2));
+    const myGrade = stGradeInfo.grade;
+    
+    if (DOM.simCompMyGrade) DOM.simCompMyGrade.textContent = myGrade.toFixed(1);
+    if (DOM.simCompMyBar) DOM.simCompMyBar.style.width = `${(myGrade / 5.0) * 100}%`;
+    if (DOM.simCompAvgGrade) DOM.simCompAvgGrade.textContent = avgGrade.toFixed(1);
+    if (DOM.simCompAvgBar) DOM.simCompAvgBar.style.width = `${(avgGrade / 5.0) * 100}%`;
+    if (DOM.simCompMaxGrade) DOM.simCompMaxGrade.textContent = maxGrade.toFixed(1);
+    if (DOM.simCompMaxBar) DOM.simCompMaxBar.style.width = `${(maxGrade / 5.0) * 100}%`;
+    
+    if (DOM.simCompStandingBanner) {
+      if (myGrade === maxGrade && maxGrade > avgGrade) {
+        DOM.simCompStandingBanner.textContent = "🥇 ¡Felicidades! Tienes el rendimiento académico más alto del grupo.";
+        DOM.simCompStandingBanner.style.backgroundColor = "var(--bg-success-soft)";
+        DOM.simCompStandingBanner.style.borderColor = "rgba(16, 185, 129, 0.15)";
+        DOM.simCompStandingBanner.style.color = "var(--color-success)";
+      } else if (myGrade > avgGrade) {
+        DOM.simCompStandingBanner.textContent = "📈 Te encuentras por encima del promedio del grupo de formación.";
+        DOM.simCompStandingBanner.style.backgroundColor = "var(--bg-info-soft)";
+        DOM.simCompStandingBanner.style.borderColor = "rgba(14, 165, 233, 0.15)";
+        DOM.simCompStandingBanner.style.color = "var(--color-info)";
+      } else if (myGrade === avgGrade) {
+        DOM.simCompStandingBanner.textContent = "⚖️ Tu rendimiento es equivalente al promedio exacto del grupo.";
+        DOM.simCompStandingBanner.style.backgroundColor = "var(--bg-warning-soft)";
+        DOM.simCompStandingBanner.style.borderColor = "rgba(245, 158, 11, 0.15)";
+        DOM.simCompStandingBanner.style.color = "var(--color-warning)";
+      } else {
+        DOM.simCompStandingBanner.textContent = "⚠️ Te encuentras por debajo del promedio del grupo. Revisa los aspectos a mejorar.";
+        DOM.simCompStandingBanner.style.backgroundColor = "var(--bg-danger-soft)";
+        DOM.simCompStandingBanner.style.borderColor = "rgba(239, 68, 68, 0.15)";
+        DOM.simCompStandingBanner.style.color = "var(--color-danger)";
+      }
+    }
+
+    // 4. Aspect-Level Diagnostic Recommendations
+    if (DOM.simRecommendationsList) {
+      DOM.simRecommendationsList.innerHTML = "";
+      const activeCrits = currentSignature.activeCriteriaByEvent[evName] || [];
+      const notMetList = [];
+      const pendingList = [];
+      
+      activeCrits.forEach(critId => {
+        const key = `${student.id}_${critId}_${evName}`;
+        const cellEval = evaluations[key] || { state: "Pending" };
+        if (cellEval.state === "Not Met") {
+          notMetList.push({ id: critId, state: cellEval.state });
+        } else if (cellEval.state === "Pending") {
+          pendingList.push({ id: critId, state: cellEval.state });
+        } else if (cellEval.state === "Disputed") {
+          notMetList.push({ id: critId, state: cellEval.state });
+        }
+      });
+      
+      if (notMetList.length === 0 && pendingList.length === 0 && activeCrits.length > 0) {
+        DOM.simRecommendationsList.innerHTML = `
+          <div style="text-align: center; padding: 30px 10px; color: var(--text-secondary);">
+            <span style="font-size: 3rem;">🎉</span>
+            <h4 style="font-weight: 700; color: var(--text-primary); margin-top: 10px;">¡Excelente Desempeño!</h4>
+            <p style="font-size: 0.75rem; margin-top: 4px;">Has cumplido satisfactoriamente con todos los criterios de evaluación activos para este hito académico.</p>
+          </div>
+        `;
+      } else if (activeCrits.length === 0) {
+        DOM.simRecommendationsList.innerHTML = `<p style="font-size: 0.75rem; color: var(--text-muted); text-align: center; padding: 12px 0;">No hay criterios activos en este evento.</p>`;
+      } else {
+        // Priority rendering: Not Met (Core first), then other Not Met, then Pending
+        const sortedDiagnosis = [];
+        
+        // Cores Not Met
+        notMetList.forEach(item => {
+          const crit = currentSignature.criteria[item.id];
+          if (crit.type === "Core") sortedDiagnosis.push({ ...item, crit });
+        });
+        
+        // Advanced/Transversal Not Met/Disputed
+        notMetList.forEach(item => {
+          const crit = currentSignature.criteria[item.id];
+          if (crit.type !== "Core") sortedDiagnosis.push({ ...item, crit });
+        });
+        
+        // Pending Criteria
+        pendingList.forEach(item => {
+          const crit = currentSignature.criteria[item.id];
+          sortedDiagnosis.push({ ...item, crit });
+        });
+        
+        sortedDiagnosis.forEach(diag => {
+          const card = document.createElement("div");
+          card.className = "diagnostic-card";
+          
+          let title = "";
+          let advice = "";
+          let typeLabel = diag.crit.type === "Core" ? "Técnica (Core)" : (diag.crit.type === "Advanced" ? "Avanzada" : "Transversal");
+          
+          if (diag.state === "Not Met") {
+            if (diag.crit.type === "Core") {
+              card.classList.add("warning-core");
+              title = `🚨 URGENTE: ${diag.id} - ${diag.crit.name.split(":")[0]} (No Lograda)`;
+              advice = `Esta competencia técnica es de carácter <strong>indispensable</strong>. Tu calificación actual está reprobando (< 3.0) debido a este pendiente. Si consideras que cumples con la rúbrica, utiliza tus tokens para redactar una sustentación técnica en la sección 'Competencias y Apelaciones'.`;
+            } else if (diag.crit.type === "Advanced") {
+              card.classList.add("info-advanced");
+              title = `⭐ MEJORA: ${diag.id} - ${diag.crit.name.split(":")[0]} (No Lograda)`;
+              advice = `Esta competencia es avanzada. Lograr este criterio te permitirá elevar tu calificación de aprobado hasta el rango superior o de excelencia (máximo 5.0).`;
+            } else {
+              card.classList.add("suggest-transversal");
+              title = `🤝 SUGERENCIA: ${diag.id} - ${diag.crit.name.split(":")[0]} (No Lograda)`;
+              advice = `Esta competencia transversal de habilidades socio-laborales es importante para tu formación integral. Revisa con el docente las condiciones de cumplimiento.`;
+            }
+          } else if (diag.state === "Disputed") {
+            card.className = "diagnostic-card";
+            card.style.borderLeft = "3px solid var(--color-disputed)";
+            title = `⛔ EN APELACIÓN: ${diag.id} - ${diag.crit.name.split(":")[0]}`;
+            advice = `Has presentado una apelación técnica para este criterio. Se encuentra en la bandeja del docente esperando revisión de tu caso de defensa.`;
+          } else {
+            // Pending
+            card.style.borderLeft = "3px solid var(--text-muted)";
+            title = `⏳ PENDIENTE: ${diag.id} - ${diag.crit.name.split(":")[0]}`;
+            advice = `Este criterio aún no ha sido evaluado en este hito académico. Prepárate con antelación para sustentar tu desempeño ante el evaluador corporativo.`;
+          }
+          
+          const actionPlan = getCriterionActionPlan(diag.id, diag.crit.name);
+          card.innerHTML = `
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: flex; justify-content: space-between; align-items: center;">
+              <span>${title}</span>
+              <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">${typeLabel}</span>
+            </div>
+            <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.35; margin-top: 2px;">${advice}</p>
+            <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color); font-size: 0.7rem; color: var(--text-muted);">
+              ${actionPlan}
+            </div>
+          `;
+          
+          DOM.simRecommendationsList.appendChild(card);
+        });
+      }
+    }
+  }
+
+  // --- Render Competencies Checklist Sub-view ---
   DOM.simChecklistContainer.innerHTML = "";
   const activeCrits = currentSignature.activeCriteriaByEvent[evName] || [];
   
   if (activeCrits.length === 0) {
-    DOM.simChecklistContainer.innerHTML = `<p style="font-size: 0.72rem; color: var(--text-muted); text-align: center; padding: 12px 0;">No active grading cells for this milestone event.</p>`;
+    DOM.simChecklistContainer.innerHTML = `<p style="font-size: 0.72rem; color: var(--text-muted); text-align: center; padding: 12px 0;">No hay celdas de calificación activas para este evento de hito.</p>`;
     return;
   }
   
@@ -1200,7 +1468,7 @@ function renderStudentSimulator() {
         <span class="sim-chk-badge ${badgeClass}">${badgeText}</span>
         <div class="sim-chk-details">
           <span class="sim-chk-name">${critId}: ${crit.name}</span>
-          <span class="sim-chk-type">${statusText} • ${crit.type}</span>
+          <span class="sim-chk-type">${statusText} • ${crit.type === "Core" ? "Técnica" : (crit.type === "Advanced" ? "Avanzada" : "Transversal")}</span>
         </div>
       </div>
       <div class="sim-chk-right">
@@ -2285,6 +2553,9 @@ function initializeEvents() {
   
   // Student Picker in Simulator
   DOM.simStudentPicker.addEventListener("change", () => {
+    activeStudentAppeal = null;
+    if (DOM.simAppealFormContainer) DOM.simAppealFormContainer.style.display = "none";
+    if (DOM.simAppealEmptyState) DOM.simAppealEmptyState.style.display = "flex";
     renderStudentSimulator();
   });
   
