@@ -253,6 +253,14 @@ const DOM = {
   matrixHeaderRow: document.getElementById("matrix-header-row"),
   matrixBody: document.getElementById("matrix-body"),
   
+  // Matrix Criterion Inspector Elements
+  inspectorPlaceholder: document.getElementById("inspector-placeholder"),
+  inspectorContent: document.getElementById("inspector-content"),
+  inspectorCodeType: document.getElementById("inspector-code-type"),
+  inspectorElement: document.getElementById("inspector-element"),
+  inspectorName: document.getElementById("inspector-name"),
+  inspectorDesc: document.getElementById("inspector-desc"),
+  
   // Consolidated MNC Control Suite Elements
   appMainContent: document.querySelector(".app-main-content"),
   matrixConfigToggleBtn: document.getElementById("matrix-config-toggle-btn"),
@@ -702,6 +710,38 @@ function renderTeacherWorkspace(calculatedData) {
       <span class="col-header-title" style="font-size: 0.72rem;">${elementLabel}${critId}</span>
       <span class="col-header-subtitle" title="${elementFull}${crit.name}">${crit.name}</span>
     `;
+    
+    thCrit.style.cursor = "pointer";
+    thCrit.addEventListener("click", () => {
+      if (DOM.inspectorPlaceholder) DOM.inspectorPlaceholder.style.display = "none";
+      if (DOM.inspectorContent) {
+        DOM.inspectorContent.style.display = "block";
+        
+        if (DOM.inspectorCodeType) {
+          DOM.inspectorCodeType.textContent = `${critId} • ${crit.type === "Core" ? "Core" : (crit.type === "Advanced" ? "Avanzada" : "Transversal")}`;
+          let indicatorBg = "var(--color-danger)";
+          if (crit.type === "Advanced") indicatorBg = "var(--color-info)";
+          else if (crit.type === "Transversal") indicatorBg = "var(--color-warning)";
+          DOM.inspectorCodeType.style.backgroundColor = indicatorBg;
+          DOM.inspectorCodeType.style.color = "#fff";
+          DOM.inspectorCodeType.style.padding = "2px 6px";
+          DOM.inspectorCodeType.style.borderRadius = "4px";
+          DOM.inspectorCodeType.style.fontWeight = "700";
+        }
+        
+        if (DOM.inspectorElement) {
+          DOM.inspectorElement.textContent = crit.element || "General";
+        }
+        
+        const nameParts = crit.name.split(":");
+        const cName = nameParts[0].trim();
+        const cDesc = nameParts.slice(1).join(":").trim() || "";
+        
+        if (DOM.inspectorName) DOM.inspectorName.textContent = cName;
+        if (DOM.inspectorDesc) DOM.inspectorDesc.innerHTML = cDesc || crit.name;
+      }
+    });
+    
     DOM.matrixHeaderRow.appendChild(thCrit);
   });
   
