@@ -332,6 +332,29 @@
               <p class="widget-subtitle font-mono">Active Student Appeals (Workflow 1)</p>
             </div>
             
+            <!-- Search & Filters for Priority Inbox -->
+            <div class="inbox-filters-container">
+              <div class="inbox-search-wrapper">
+                <svg class="search-icon" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+                <input type="text" id="inbox-search" placeholder="Buscar estudiante o criterio..." class="sleek-input" />
+              </div>
+              <div class="inbox-select-row">
+                <select id="inbox-filter-type" class="sleek-select">
+                  <option value="All">Todos los Tipos</option>
+                  <option value="Core">Core (Técnicas)</option>
+                  <option value="Advanced">Advanced (Avanzadas)</option>
+                  <option value="Transversal">Transversal</option>
+                </select>
+                <select id="inbox-filter-urgency" class="sleek-select">
+                  <option value="All">Toda Urgencia</option>
+                  <option value="Risk">En Riesgo (&lt; 3.0)</option>
+                  <option value="Safe">Aprobando (&gt;= 3.0)</option>
+                </select>
+              </div>
+            </div>
+            
             <!-- Active Appeals Feed -->
             <div class="priority-inbox-feed" id="priority-inbox-container">
               <!-- Dynamically filled with dispute list items -->

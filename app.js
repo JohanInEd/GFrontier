@@ -247,6 +247,9 @@ const DOM = {
   priorityInboxSidebar: document.getElementById("priority-inbox-sidebar"),
   toggleInboxBtn: document.getElementById("toggle-inbox-btn"),
   priorityInboxContainer: document.getElementById("priority-inbox-container"),
+  inboxSearch: document.getElementById("inbox-search"),
+  inboxFilterType: document.getElementById("inbox-filter-type"),
+  inboxFilterUrgency: document.getElementById("inbox-filter-urgency"),
   emptyInboxState: document.getElementById("empty-inbox-state"),
   matrixModuleEventText: document.getElementById("matrix-module-event-text"),
   gradingMatrixTable: document.getElementById("grading-matrix-table"),
@@ -1083,43 +1086,138 @@ function renderDashboard(calculatedData) {
  * Renders Priority Inbox Widget Feed
  */
 function renderPriorityInbox(disputes) {
-  DOM.priorityInboxContainer.querySelectorAll(".dispute-card").forEach(el => el.remove());
+  const filtersEl = document.querySelector(".inbox-filters-container");
   
   if (disputes.length === 0) {
+    if (filtersEl) filtersEl.style.display = "none";
+    DOM.priorityInboxContainer.querySelectorAll(".dispute-card, .inbox-group, .empty-feed-state-search").forEach(el => el.remove());
     DOM.emptyInboxState.style.display = "flex";
     return;
   }
   
+  if (filtersEl) filtersEl.style.display = "flex";
   DOM.emptyInboxState.style.display = "none";
   
-  disputes.forEach(dispute => {
-    const card = document.createElement("div");
-    card.className = "dispute-card";
-    card.dataset.evalKey = dispute.evaluationKey;
+  // Extract current search & filter state
+  const searchText = DOM.inboxSearch ? DOM.inboxSearch.value.trim().toLowerCase() : "";
+  const filterType = DOM.inboxFilterType ? DOM.inboxFilterType.value : "All";
+  const filterUrgency = DOM.inboxFilterUrgency ? DOM.inboxFilterUrgency.value : "All";
+  
+  // Filter active disputes
+  const filteredDisputes = disputes.filter(dispute => {
+    // 1. Search filter (by student name, criterion ID, or criterion name)
+    if (searchText) {
+      const matchName = dispute.studentName.toLowerCase().includes(searchText);
+      const matchCritId = dispute.criterionId.toLowerCase().includes(searchText);
+      const matchCritName = dispute.criterionName.toLowerCase().includes(searchText);
+      if (!matchName && !matchCritId && !matchCritName) return false;
+    }
     
-    card.innerHTML = `
-      <div class="dispute-card-header">
-        <span class="dispute-student-name">${dispute.studentName}</span>
-        <span class="dispute-token-badge font-mono">${dispute.studentTokens} Tokens left</span>
+    // 2. Category type filter (Core, Advanced, Transversal)
+    if (filterType !== "All") {
+      if (dispute.criterionType !== filterType) return false;
+    }
+    
+    // 3. Urgency filter based on student's standing grade (< 3.0 is Risk, >= 3.0 is Safe)
+    if (filterUrgency !== "All") {
+      const gradeInfo = getStudentGradeInfo(dispute.studentId, dispute.programName, dispute.signatureName);
+      const isRisk = gradeInfo && gradeInfo.grade < 3.0;
+      if (filterUrgency === "Risk" && !isRisk) return false;
+      if (filterUrgency === "Safe" && isRisk) return false;
+    }
+    
+    return true;
+  });
+  
+  // Clear previous cards and grouped sections
+  DOM.priorityInboxContainer.querySelectorAll(".dispute-card, .inbox-group, .empty-feed-state-search").forEach(el => el.remove());
+  
+  if (filteredDisputes.length === 0) {
+    const searchEmpty = document.createElement("div");
+    searchEmpty.className = "empty-feed-state empty-feed-state-search";
+    searchEmpty.innerHTML = `
+      <div class="empty-badge">🔍</div>
+      <h3>Sin resultados</h3>
+      <p style="font-size: 0.72rem;">No se encontraron apelaciones con los criterios de búsqueda.</p>
+    `;
+    DOM.priorityInboxContainer.appendChild(searchEmpty);
+    return;
+  }
+  
+  // Group disputes by "Signature Name • Event ID"
+  const groups = {};
+  filteredDisputes.forEach(dispute => {
+    const groupKey = `${dispute.signatureName} • ${dispute.eventId}`;
+    if (!groups[groupKey]) groups[groupKey] = [];
+    groups[groupKey].push(dispute);
+  });
+  
+  window.collapsedInboxGroups = window.collapsedInboxGroups || new Set();
+  
+  Object.keys(groups).forEach(groupKey => {
+    const groupDisputes = groups[groupKey];
+    
+    const groupEl = document.createElement("div");
+    groupEl.className = "inbox-group";
+    if (window.collapsedInboxGroups.has(groupKey)) {
+      groupEl.classList.add("collapsed");
+    }
+    
+    const headerEl = document.createElement("div");
+    headerEl.className = "inbox-group-header";
+    headerEl.innerHTML = `
+      <div class="inbox-group-title-wrapper">
+        <span class="inbox-group-arrow">▼</span>
+        <span class="inbox-group-title font-sans font-semibold">${groupKey}</span>
       </div>
-      <div>
-        <span class="dispute-criterion-name font-mono font-semibold" style="font-size: 0.68rem; padding: 2px 4px;">
-          ${dispute.criterionId} • ${dispute.signatureName} [${dispute.eventId}]
-        </span>
-      </div>
-      <div class="dispute-snippet">"${dispute.defenseText}"</div>
-      <div class="dispute-action-footer">
-        <button class="appeal-action-btn font-sans">
-          <span>Revisar Sustentación →</span>
-        </button>
-      </div>
+      <span class="inbox-group-badge font-mono">${groupDisputes.length}</span>
     `;
     
-    card.addEventListener("click", () => {
-      openAppealDrawer(dispute);
+    const cardsContainer = document.createElement("div");
+    cardsContainer.className = "inbox-group-cards";
+    
+    groupDisputes.forEach(dispute => {
+      const card = document.createElement("div");
+      card.className = "dispute-card";
+      card.dataset.evalKey = dispute.evaluationKey;
+      
+      card.innerHTML = `
+        <div class="dispute-card-header">
+          <span class="dispute-student-name">${dispute.studentName}</span>
+          <span class="dispute-token-badge font-mono">${dispute.studentTokens} Tokens left</span>
+        </div>
+        <div>
+          <span class="dispute-criterion-name font-mono font-semibold" style="font-size: 0.68rem; padding: 2px 4px;">
+            ${dispute.criterionId} • ${dispute.criterionName}
+          </span>
+        </div>
+        <div class="dispute-snippet">"${dispute.defenseText}"</div>
+        <div class="dispute-action-footer">
+          <button class="appeal-action-btn font-sans">
+            <span>Revisar Sustentación →</span>
+          </button>
+        </div>
+      `;
+      
+      card.addEventListener("click", () => {
+        openAppealDrawer(dispute);
+      });
+      
+      cardsContainer.appendChild(card);
     });
     
-    DOM.priorityInboxContainer.appendChild(card);
+    headerEl.addEventListener("click", () => {
+      const collapsed = groupEl.classList.toggle("collapsed");
+      if (collapsed) {
+        window.collapsedInboxGroups.add(groupKey);
+      } else {
+        window.collapsedInboxGroups.delete(groupKey);
+      }
+    });
+    
+    groupEl.appendChild(headerEl);
+    groupEl.appendChild(cardsContainer);
+    DOM.priorityInboxContainer.appendChild(groupEl);
   });
 }
 
@@ -2663,6 +2761,26 @@ function applyExtractedAICompetencies() {
 
 // --- 7. EVENT INITIALIZERS ---
 function initializeEvents() {
+  
+  // Inbox Search & Filter listeners
+  if (DOM.inboxSearch) {
+    DOM.inboxSearch.addEventListener("input", () => {
+      const calcData = calculateGradesAndMetrics();
+      renderPriorityInbox(calcData.activeDisputes);
+    });
+  }
+  if (DOM.inboxFilterType) {
+    DOM.inboxFilterType.addEventListener("change", () => {
+      const calcData = calculateGradesAndMetrics();
+      renderPriorityInbox(calcData.activeDisputes);
+    });
+  }
+  if (DOM.inboxFilterUrgency) {
+    DOM.inboxFilterUrgency.addEventListener("change", () => {
+      const calcData = calculateGradesAndMetrics();
+      renderPriorityInbox(calcData.activeDisputes);
+    });
+  }
   
   // Program Select (Teacher)
   DOM.programSelector.addEventListener("change", (e) => {
