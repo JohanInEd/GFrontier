@@ -69,58 +69,100 @@ const PROGRAM_HIERARCHY = {
 
 // Initial state evaluations pre-loaded for software and multimedia student rosters
 const SEED_EVALUATIONS = {
-  // Software - Razonamiento Cuantitativo - Taller 1: Lógica y Algoritmos
-  "S1_C1_Taller 1: Lógica y Algoritmos": { state: "Met" },
-  "S1_C2_Taller 1: Lógica y Algoritmos": { state: "Met" },
-  "S1_T1_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  // Software - Razonamiento Cuantitativo - Taller 1: Lgica y Algoritmos
+  "S1_C1_Taller 1: Lgica y Algoritmos": { state: "Met" },
+  "S1_C2_Taller 1: Lgica y Algoritmos": { state: "Met" },
+  "S1_T1_Taller 1: Lgica y Algoritmos": { state: "Met" },
   
-  "S3_C1_Taller 1: Lógica y Algoritmos": { state: "Met" },
-  "S3_C2_Taller 1: Lógica y Algoritmos": { state: "Not Met" },
-  "S3_T1_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  "S3_C1_Taller 1: Lgica y Algoritmos": { state: "Met" },
+  "S3_C2_Taller 1: Lgica y Algoritmos": { state: "Not Met" },
+  "S3_T1_Taller 1: Lgica y Algoritmos": { state: "Met" },
 
-  // Software - Razonamiento Cuantitativo - Evaluación 2: Complejidad
-  "S1_C1_Evaluación 2: Complejidad": { state: "Met" },
-  "S1_C2_Evaluación 2: Complejidad": { state: "Met" },
-  "S1_C3_Evaluación 2: Complejidad": { state: "Not Met" }, // Alexander fails because Core C3 is Not Met. Perfect simulator target!
-  "S1_T1_Evaluación 2: Complejidad": { state: "Met" },
-  "S1_T2_Evaluación 2: Complejidad": { state: "Met" },
+  // Software - Razonamiento Cuantitativo - Evaluacin 2: Complejidad
+  // S1: Failing (Alexander Wright) - Grade 2.27
+  "S1_C1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S1_C2_Evaluacin 2: Complejidad": { state: "Met" },
+  "S1_C3_Evaluacin 2: Complejidad": { state: "Not Met" },
+  "S1_A1_Evaluacin 2: Complejidad": { state: "Not Met" },
+  "S1_T1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S1_T2_Evaluacin 2: Complejidad": { state: "Met" },
 
-  "S2_C1_Evaluación 2: Complejidad": { state: "Met" },
-  "S2_C2_Evaluación 2: Complejidad": { state: "Met" },
-  "S2_C3_Evaluación 2: Complejidad": { state: "Met" }, // Bianca is passing with a 3.0 (all cores met, 0% advanced)
-  "S2_T1_Evaluación 2: Complejidad": { state: "Met" },
-  "S2_T2_Evaluación 2: Complejidad": { state: "Not Met" },
+  // S2: Good Passing (Bianca Vance) - Grade 4.0
+  "S2_C1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S2_C2_Evaluacin 2: Complejidad": { state: "Met" },
+  "S2_C3_Evaluacin 2: Complejidad": { state: "Met" },
+  "S2_A1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S2_A2_Evaluacin 2: Complejidad": { state: "Not Met" },
+  "S2_T1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S2_T2_Evaluacin 2: Complejidad": { state: "Not Met" },
 
-  // Carlos Mendez S3 active Boolean logic dispute!
-  "S3_C1_Evaluación 2: Complejidad": { state: "Met" },
-  "S3_C2_Evaluación 2: Complejidad": { 
+  // S3: Failing with Active Dispute (Carlos Mendez) - Grade 2.27
+  "S3_C1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S3_C2_Evaluacin 2: Complejidad": { 
     state: "Disputed", 
-    defenseText: "En el punto 3 de la evaluación, mi expresión simplificada usando Álgebra de Boole es totalmente equivalente a la planteada por el docente en la clave. El calificador automático de la corporación me lo marcó incorrecto únicamente por la dirección de los paréntesis, pero la lógica de verdad es óptima." 
+    defenseText: "En el punto 3 de la evaluacin, mi expresin simplificada usando lgebra de Boole es totalmente equivalente a la planteada por el docente en la clave. El calificador automtico de la corporacin me lo marc incorrecto nicamente por la direccin de los parntesis, pero la lgica de verdad es ptima." 
   },
-  "S3_C3_Evaluación 2: Complejidad": { state: "Met" },
-  "S3_T1_Evaluación 2: Complejidad": { state: "Met" },
-  "S3_T2_Evaluación 2: Complejidad": { state: "Pending" },
+  "S3_C3_Evaluacin 2: Complejidad": { state: "Met" },
+  "S3_A1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S3_T1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S3_T2_Evaluacin 2: Complejidad": { state: "Pending" },
 
-  "S4_C1_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_C2_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_C3_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_T1_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_T2_Evaluación 2: Complejidad": { state: "Met" },
+  // S4: Perfect Grade (Diana Prince) - Grade 5.0
+  "S4_C1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S4_C2_Evaluacin 2: Complejidad": { state: "Met" },
+  "S4_C3_Evaluacin 2: Complejidad": { state: "Met" },
+  "S4_A1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S4_A2_Evaluacin 2: Complejidad": { state: "Met" },
+  "S4_T1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S4_T2_Evaluacin 2: Complejidad": { state: "Met" },
 
-  "S5_C1_Evaluación 2: Complejidad": { state: "Not Met" }, // Evan Fletcher is failing
-  "S5_C2_Evaluación 2: Complejidad": { state: "Pending" },
-  "S5_T1_Evaluación 2: Complejidad": { state: "Pending" },
+  // S5: Standard Passing (Evan Fletcher) - Grade 3.0
+  "S5_C1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S5_C2_Evaluacin 2: Complejidad": { state: "Met" },
+  "S5_C3_Evaluacin 2: Complejidad": { state: "Met" },
+  "S5_A1_Evaluacin 2: Complejidad": { state: "Not Met" },
+  "S5_A2_Evaluacin 2: Complejidad": { state: "Not Met" },
+  "S5_T1_Evaluacin 2: Complejidad": { state: "Met" },
+  "S5_T2_Evaluacin 2: Complejidad": { state: "Pending" },
 
-  // Multimedia - Razonamiento Cuantitativo - Evaluación 2: Tasas y Bitrates
-  "S6_C1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S6_C2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S6_C3_Evaluación 2: Tasas y Bitrates": { state: "Not Met" }, // Fiona is failing because of Bitrates Core!
-  "S6_T2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
+  // Multimedia - Razonamiento Cuantitativo - Evaluacin 2: Tasas y Bitrates
+  // S6: Failing (Fiona Gallagher) - Grade 2.27
+  "S6_C1_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S6_C2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S6_C3_Evaluacin 2: Tasas y Bitrates": { state: "Not Met" },
+  "S6_A1_Evaluacin 2: Tasas y Bitrates": { state: "Not Met" },
+  "S6_T2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
 
-  "S7_C1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S7_C2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S7_C3_Evaluación 2: Tasas y Bitrates": { state: "Met" }, // Gabriel Torres is passing
-  "S7_T2_Evaluación 2: Tasas y Bitrates": { state: "Met" }
+  // S7: Perfect Grade (Gabriel Torres) - Grade 5.0
+  "S7_C1_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S7_C2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S7_C3_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S7_A1_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S7_T2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+
+  // S8: Standard Passing (Hugo Martinez) - Grade 3.0
+  "S8_C1_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S8_C2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S8_C3_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S8_A1_Evaluacin 2: Tasas y Bitrates": { state: "Not Met" },
+  "S8_T2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+
+  // S9: Failing with Active Dispute (Isabela Rios) - Grade 2.27
+  "S9_C1_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S9_C2_Evaluacin 2: Tasas y Bitrates": { 
+    state: "Disputed", 
+    defenseText: "El clculo del bitrate de audio propuesto en mi respuesta toma en cuenta los canales estreo (factor x2), lo cual es fsicamente correcto en la prctica multimedia, aunque la plataforma lo esperaba en mono. Solicito revisin docente."
+  },
+  "S9_C3_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S9_A1_Evaluacin 2: Tasas y Bitrates": { state: "Pending" },
+  "S9_T2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+
+  // S10: Standard Passing (Jorge Perez) - Grade 3.0
+  "S10_C1_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S10_C2_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S10_C3_Evaluacin 2: Tasas y Bitrates": { state: "Met" },
+  "S10_A1_Evaluacin 2: Tasas y Bitrates": { state: "Not Met" },
+  "S10_T2_Evaluacin 2: Tasas y Bitrates": { state: "Pending" }
 };
 
 // --- 2. PERSISTENCE LAYER ---
@@ -130,7 +172,7 @@ class LocalState {
   }
 
   load() {
-    const saved = localStorage.getItem("CERW_corp_state_v2");
+    const saved = localStorage.getItem("CERW_corp_state_v3");
     if (saved) {
       try {
         this.data = JSON.parse(saved);
@@ -155,7 +197,7 @@ class LocalState {
   }
 
   save() {
-    localStorage.setItem("CERW_corp_state_v2", JSON.stringify(this.data));
+    localStorage.setItem("CERW_corp_state_v3", JSON.stringify(this.data));
   }
 
   resetToDefaults() {
