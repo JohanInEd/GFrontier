@@ -13,7 +13,7 @@ const PROGRAM_HIERARCHY = {
         students: [
           { id: "S1", name: "Alexander Wright", tokens: 3 },
           { id: "S2", name: "Bianca Vance", tokens: 2 },
-          { id: "S3", name: "Carlos Mendez", tokens: 2 }, // Pre-consumed 1 token for active dispute (was 3)
+          { id: "S3", name: "Carlos Mendez", tokens: 2 },
           { id: "S4", name: "Diana Prince", tokens: 1 },
           { id: "S5", name: "Evan Fletcher", tokens: 3 }
         ],
@@ -26,11 +26,44 @@ const PROGRAM_HIERARCHY = {
           "T1": { name: "Documentación Técnica Cuantitativa: Redactar reportes técnicos de análisis métricos cuantitativos empleando vocabulario técnico y asertivo", type: "Transversal", element: "Elemento Transversal: Comunicación y Calidad Laboral" },
           "T2": { name: "Resolución Colaborativa de Errores: Colaborar en la corrección lógica de fallas matemáticas en código mediante depuración grupal", type: "Transversal", element: "Elemento Transversal: Comunicación y Calidad Laboral" }
         },
-        events: ["Taller 1: Lógica y Algoritmos", "Evaluación 2: Complejidad", "Caso Final: Georreferenciación Móvil"],
+        events: [
+          "Taller 1: Lógica y Algoritmos", 
+          "Evaluación 1: Parcial", 
+          "Taller 2: Estructuras", 
+          "Evaluación 2: Complejidad", 
+          "Proyecto Final: Sustentación", 
+          "Caso Final: Georreferenciación Móvil"
+        ],
         activeCriteriaByEvent: {
           "Taller 1: Lógica y Algoritmos": ["C1", "C2", "T1"],
+          "Evaluación 1: Parcial": ["C1", "C2", "T1"],
+          "Taller 2: Estructuras": ["C1", "C2", "C3", "T2"],
           "Evaluación 2: Complejidad": ["C1", "C2", "C3", "A1", "T1", "T2"],
+          "Proyecto Final: Sustentación": ["C1", "C2", "C3", "A1", "A2", "T1", "T2"],
           "Caso Final: Georreferenciación Móvil": ["C1", "C2", "C3", "A1", "A2", "T1", "T2"]
+        },
+        cuts: {
+          "Corte 1": {
+            weight: 0.3,
+            events: {
+              "Taller 1: Lógica y Algoritmos": { weight: 0.4, isExam: false },
+              "Evaluación 1: Parcial": { weight: 0.6, isExam: true }
+            }
+          },
+          "Corte 2": {
+            weight: 0.3,
+            events: {
+              "Taller 2: Estructuras": { weight: 0.4, isExam: false },
+              "Evaluación 2: Complejidad": { weight: 0.6, isExam: true }
+            }
+          },
+          "Corte 3": {
+            weight: 0.4,
+            events: {
+              "Proyecto Final: Sustentación": { weight: 0.3, isExam: false },
+              "Caso Final: Georreferenciación Móvil": { weight: 0.7, isExam: true }
+            }
+          }
         }
       }
     }
@@ -50,17 +83,50 @@ const PROGRAM_HIERARCHY = {
         criteria: {
           "C1": { name: "Proporciones y Ratios Visuales: Calcular relaciones de aspecto y escalas de encuadre según las especificaciones del diseño visual", type: "Core", element: "Elemento 1: Composición y Escalas Gráficas" },
           "C2": { name: "Vectores y Transformaciones 2D/3D: Resolver operaciones vectoriales básicas para transformaciones de traslación y rotación gráfica", type: "Core", element: "Elemento 1: Composición y Escalas Gráficas" },
-          "C3": { name: "Tasas de Transferencia (Bitrate): Calcular tasas de compresión de audio y video de acuerdo con los requisitos de ancho de banda", type: "Core", element: "Elemento 2: Compresión y Bitrates" },
+          "C3": { name: "Tasas de Transferencia (Bitrate): Calcular tasas de compresión de audio y video de acuerdo con los requisitos del diseño de algoritmos", type: "Core", element: "Elemento 2: Compresión y Bitrates" },
           "A1": { name: "Física de Iluminación and Sombreado: Modelar la incidencia de luz en motores de renderizado usando ecuaciones físicas y matemáticas", type: "Advanced", element: "Elemento 3: Renderizado e Interacción UX" },
           "A2": { name: "Analítica de Interfaces (UX): Analizar métricas cuantitativas de usabilidad en interfaces web conforme a tiempos y tasas de rebote", type: "Advanced", element: "Elemento 3: Renderizado e Interacción UX" },
           "T1": { name: "Sustentación Técnica Cuantitativa: Presentar informes técnicos de compresión y pesos de assets digitales de forma estructurada", type: "Transversal", element: "Elemento Transversal: Optimización de Assets" },
           "T2": { name: "Optimización de Recursos Gráficos: Optimizar recursos gráficos y pesos de assets digitales de acuerdo con los estándares establecidos", type: "Transversal", element: "Elemento Transversal: Optimización de Assets" }
         },
-        events: ["Taller 1: Vectores y Proporciones", "Evaluación 2: Tasas y Bitrates", "Proyecto Final: Optimización de Assets"],
+        events: [
+          "Taller 1: Vectores y Proporciones",
+          "Evaluación 1: Fundamentos",
+          "Taller 2: Composición",
+          "Evaluación 2: Tasas y Bitrates",
+          "Taller 3: Optimización",
+          "Proyecto Final: Optimización de Assets"
+        ],
         activeCriteriaByEvent: {
           "Taller 1: Vectores y Proporciones": ["C1", "C2", "T2"],
-          "Evaluación 2: Tasas y Bitrates": ["C1", "C2", "C3", "T2"],
+          "Evaluación 1: Fundamentos": ["C1", "C2", "T2"],
+          "Taller 2: Composición": ["C1", "C2", "C3", "T2"],
+          "Evaluación 2: Tasas y Bitrates": ["C1", "C2", "C3", "A1", "T2"],
+          "Taller 3: Optimización": ["C1", "C2", "C3", "A1", "A2", "T1", "T2"],
           "Proyecto Final: Optimización de Assets": ["C1", "C2", "C3", "A1", "A2", "T1", "T2"]
+        },
+        cuts: {
+          "Corte 1": {
+            weight: 0.3,
+            events: {
+              "Taller 1: Vectores y Proporciones": { weight: 0.4, isExam: false },
+              "Evaluación 1: Fundamentos": { weight: 0.6, isExam: true }
+            }
+          },
+          "Corte 2": {
+            weight: 0.3,
+            events: {
+              "Taller 2: Composición": { weight: 0.4, isExam: false },
+              "Evaluación 2: Tasas y Bitrates": { weight: 0.6, isExam: true }
+            }
+          },
+          "Corte 3": {
+            weight: 0.4,
+            events: {
+              "Taller 3: Optimización": { weight: 0.3, isExam: false },
+              "Proyecto Final: Optimización de Assets": { weight: 0.7, isExam: true }
+            }
+          }
         }
       }
     }
@@ -69,17 +135,38 @@ const PROGRAM_HIERARCHY = {
 
 // Initial state evaluations pre-loaded for software and multimedia student rosters
 const SEED_EVALUATIONS = {
-  // Software - Razonamiento Cuantitativo - Taller 1: Lógica y Algoritmos
+  // Corte 1
   "S1_C1_Taller 1: Lógica y Algoritmos": { state: "Met" },
   "S1_C2_Taller 1: Lógica y Algoritmos": { state: "Met" },
   "S1_T1_Taller 1: Lógica y Algoritmos": { state: "Met" },
-  
+  "S1_C1_Evaluación 1: Parcial": { state: "Met" },
+  "S1_C2_Evaluación 1: Parcial": { state: "Met" },
+  "S1_T1_Evaluación 1: Parcial": { state: "Met" },
+
+  "S2_C1_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  "S2_C2_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  "S2_T1_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  "S2_C1_Evaluación 1: Parcial": { state: "Met" },
+  "S2_C2_Evaluación 1: Parcial": { state: "Met" },
+  "S2_T1_Evaluación 1: Parcial": { state: "Met" },
+
+  // S3 Carlos Mendez is Absent from the C1 Exam and has supletorio Pending payment!
   "S3_C1_Taller 1: Lógica y Algoritmos": { state: "Met" },
   "S3_C2_Taller 1: Lógica y Algoritmos": { state: "Not Met" },
   "S3_T1_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  "S3_C1_Evaluación 1: Parcial": { state: "Absent", supletorioState: "Pending" },
+  "S3_C2_Evaluación 1: Parcial": { state: "Absent", supletorioState: "Pending" },
+  "S3_T1_Evaluación 1: Parcial": { state: "Absent", supletorioState: "Pending" },
 
-  // Software - Razonamiento Cuantitativo - Evaluación 2: Complejidad
-  // S1: Failing (Alexander Wright) - Grade 2.27
+  // S5 Evan Fletcher is Absent from the C1 Exam and has Paid the supletorio physically!
+  "S5_C1_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  "S5_C2_Taller 1: Lógica y Algoritmos": { state: "Met" },
+  "S5_T1_Taller 1: Lógica y Algoritmos": { state: "Pending" },
+  "S5_C1_Evaluación 1: Parcial": { state: "Absent", supletorioState: "Paid" },
+  "S5_C2_Evaluación 1: Parcial": { state: "Absent", supletorioState: "Paid" },
+  "S5_T1_Evaluación 1: Parcial": { state: "Absent", supletorioState: "Paid" },
+
+  // Corte 2
   "S1_C1_Evaluación 2: Complejidad": { state: "Met" },
   "S1_C2_Evaluación 2: Complejidad": { state: "Met" },
   "S1_C3_Evaluación 2: Complejidad": { state: "Not Met" },
@@ -87,7 +174,6 @@ const SEED_EVALUATIONS = {
   "S1_T1_Evaluación 2: Complejidad": { state: "Met" },
   "S1_T2_Evaluación 2: Complejidad": { state: "Met" },
 
-  // S2: Good Passing (Bianca Vance) - Grade 4.0
   "S2_C1_Evaluación 2: Complejidad": { state: "Met" },
   "S2_C2_Evaluación 2: Complejidad": { state: "Met" },
   "S2_C3_Evaluación 2: Complejidad": { state: "Met" },
@@ -96,73 +182,49 @@ const SEED_EVALUATIONS = {
   "S2_T1_Evaluación 2: Complejidad": { state: "Met" },
   "S2_T2_Evaluación 2: Complejidad": { state: "Not Met" },
 
-  // S3: Failing with Active Dispute (Carlos Mendez) - Grade 2.27
   "S3_C1_Evaluación 2: Complejidad": { state: "Met" },
   "S3_C2_Evaluación 2: Complejidad": { 
     state: "Disputed", 
-    defenseText: "En el punto 3 de la evaluación, mi expresión simplificada usando Álgebra de Boole es totalmente equivalente a la planteada por el docente en la clave. El calificador automático de la corporación me lo marcó incorrecto únicamente por la dirección de los paréntesis, pero la lógica de verdad es óptima." 
+    defenseText: "En el punto 3 de la evaluación, mi expresión simplificada usando Álgebra de Boole es totalmente equivalente a la planteada por el docente en la clave." 
   },
   "S3_C3_Evaluación 2: Complejidad": { state: "Met" },
   "S3_A1_Evaluación 2: Complejidad": { state: "Met" },
   "S3_T1_Evaluación 2: Complejidad": { state: "Met" },
   "S3_T2_Evaluación 2: Complejidad": { state: "Pending" },
 
-  // S4: Perfect Grade (Diana Prince) - Grade 5.0
-  "S4_C1_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_C2_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_C3_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_A1_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_A2_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_T1_Evaluación 2: Complejidad": { state: "Met" },
-  "S4_T2_Evaluación 2: Complejidad": { state: "Met" },
+  // Corte 3
+  "S4_C1_Caso Final: Georreferenciación Móvil": { state: "Met" },
+  "S4_C2_Caso Final: Georreferenciación Móvil": { state: "Met" },
+  "S4_C3_Caso Final: Georreferenciación Móvil": { state: "Met" },
+  "S4_A1_Caso Final: Georreferenciación Móvil": { state: "Met" },
+  "S4_A2_Caso Final: Georreferenciación Móvil": { state: "Met" },
+  "S4_T1_Caso Final: Georreferenciación Móvil": { state: "Met" },
+  "S4_T2_Caso Final: Georreferenciación Móvil": { state: "Met" },
 
-  // S5: Standard Passing (Evan Fletcher) - Grade 3.0
-  "S5_C1_Evaluación 2: Complejidad": { state: "Met" },
-  "S5_C2_Evaluación 2: Complejidad": { state: "Met" },
-  "S5_C3_Evaluación 2: Complejidad": { state: "Met" },
-  "S5_A1_Evaluación 2: Complejidad": { state: "Not Met" },
-  "S5_A2_Evaluación 2: Complejidad": { state: "Not Met" },
-  "S5_T1_Evaluación 2: Complejidad": { state: "Met" },
-  "S5_T2_Evaluación 2: Complejidad": { state: "Pending" },
+  // S1 is absent from final exam and has paid no supletorio (None)
+  "S1_C1_Caso Final: Georreferenciación Móvil": { state: "Absent", supletorioState: "None" },
 
-  // Multimedia - Razonamiento Cuantitativo - Evaluación 2: Tasas y Bitrates
-  // S6: Failing (Fiona Gallagher) - Grade 2.27
+  // Multimedia - Razonamiento Cuantitativo
   "S6_C1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S6_C2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S6_C3_Evaluación 2: Tasas y Bitrates": { state: "Not Met" },
   "S6_A1_Evaluación 2: Tasas y Bitrates": { state: "Not Met" },
   "S6_T2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
 
-  // S7: Perfect Grade (Gabriel Torres) - Grade 5.0
   "S7_C1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S7_C2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S7_C3_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S7_A1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S7_T2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
 
-  // S8: Standard Passing (Hugo Martinez) - Grade 3.0
-  "S8_C1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S8_C2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S8_C3_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S8_A1_Evaluación 2: Tasas y Bitrates": { state: "Not Met" },
-  "S8_T2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-
-  // S9: Failing with Active Dispute (Isabela Rios) - Grade 2.27
   "S9_C1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S9_C2_Evaluación 2: Tasas y Bitrates": { 
     state: "Disputed", 
-    defenseText: "El cálculo del bitrate de audio propuesto en mi respuesta toma en cuenta los canales estéreo (factor x2), lo cual es físicamente correcto en la práctica multimedia, aunque la plataforma lo esperaba en mono. Solicito revisión docente."
+    defenseText: "El cálculo del bitrate de audio propuesto en mi respuesta toma en cuenta los canales estéreo (factor x2), lo cual es físicamente correcto en la práctica multimedia."
   },
   "S9_C3_Evaluación 2: Tasas y Bitrates": { state: "Met" },
   "S9_A1_Evaluación 2: Tasas y Bitrates": { state: "Pending" },
-  "S9_T2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-
-  // S10: Standard Passing (Jorge Perez) - Grade 3.0
-  "S10_C1_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S10_C2_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S10_C3_Evaluación 2: Tasas y Bitrates": { state: "Met" },
-  "S10_A1_Evaluación 2: Tasas y Bitrates": { state: "Not Met" },
-  "S10_T2_Evaluación 2: Tasas y Bitrates": { state: "Pending" }
+  "S9_T2_Evaluación 2: Tasas y Bitrates": { state: "Met" }
 };
 
 // --- 2. PERSISTENCE LAYER ---
@@ -172,7 +234,7 @@ class LocalState {
   }
 
   load() {
-    const saved = localStorage.getItem("CERW_corp_state_v4");
+    const saved = localStorage.getItem("CERW_corp_state_v5");
     if (saved) {
       try {
         this.data = JSON.parse(saved);
@@ -188,6 +250,10 @@ class LocalState {
           this.data.managerSubjects = ["Razonamiento cuantitativo", "Ingles", "Comunicacion oral y escrita", "Competencias digitales"];
           this.save();
         }
+        if (!this.data.habilitaciones) {
+          this.data.habilitaciones = {};
+          this.save();
+        }
         return;
       } catch (e) {
         console.error("Failed to load local storage state:", e);
@@ -197,20 +263,21 @@ class LocalState {
   }
 
   save() {
-    localStorage.setItem("CERW_corp_state_v4", JSON.stringify(this.data));
+    localStorage.setItem("CERW_corp_state_v5", JSON.stringify(this.data));
   }
 
   resetToDefaults() {
     this.data = {
       selectedProgram: "Desarrollo de software y aplicaciones móviles",
       selectedSignature: "Razonamiento cuantitativo",
-      selectedEvent: "Evaluación 2: Complejidad",
+      selectedEvent: "Taller 1: Lógica y Algoritmos",
       programs: JSON.parse(JSON.stringify(PROGRAM_HIERARCHY)),
       evaluations: JSON.parse(JSON.stringify(SEED_EVALUATIONS)),
       theme: "dark",
       geminiApiKey: "AIzaSyBKnsF1Hp4HoiSd31NobFqV8ZFtQrqQY-Y",
       activeTab: "dashboard",
-      managerSubjects: ["Razonamiento cuantitativo", "Ingles", "Comunicacion oral y escrita", "Competencias digitales"]
+      managerSubjects: ["Razonamiento cuantitativo", "Ingles", "Comunicacion oral y escrita", "Competencias digitales"],
+      habilitaciones: {}
     };
     this.save();
   }
@@ -431,7 +498,7 @@ let activeStudentAppeal = null;
 /**
  * Calculates grades for a specific student in a specific signature
  */
-function getStudentGradeInfo(studentId, programName, signatureName) {
+function getStudentGradeInfo(studentId, programName, signatureName, skipHabilitationCheck = false) {
   const currentProgram = localState.data.programs[programName];
   const currentSignature = currentProgram.signatures[signatureName];
   const evaluations = localState.data.evaluations;
@@ -445,6 +512,7 @@ function getStudentGradeInfo(studentId, programName, signatureName) {
   
   const finalCompetencies = {};
   
+  // Calculate final (overall latest) state for each criterion
   activeCriteriaList.forEach(critId => {
     let latestState = null;
     
@@ -466,13 +534,13 @@ function getStudentGradeInfo(studentId, programName, signatureName) {
     
     if (latestState === "Met" || latestState === "Approved") {
       finalCompetencies[critId] = 1;
-    } else if (latestState === "Not Met" || latestState === "Disputed") {
+    } else if (latestState === "Not Met" || latestState === "Disputed" || latestState === "Absent") {
       finalCompetencies[critId] = 0;
     } else {
       finalCompetencies[critId] = null; // Unevaluated
     }
   });
-  
+
   // Sort MNC criteria types
   const activeModuleCores = [];
   const activeModuleAdvanced = [];
@@ -500,27 +568,158 @@ function getStudentGradeInfo(studentId, programName, signatureName) {
       advancedMetCount++;
     }
   });
-  
+
+  const cuts = currentSignature.cuts;
   let finalGrade = 1.0;
+  let cutGrades = {};
   
-  // Colombian Accordance Grading Rules
-  if (activeModuleCores.length === 0) {
-    const advPct = activeModuleAdvanced.length > 0 ? advancedMetCount / activeModuleAdvanced.length : 1;
-    finalGrade = 3.0 + 2.0 * advPct;
-  } else if (!allCoresMet) {
-    // Failing (< 3.0) mapped proportionally from 1.0 to 2.9
-    const corePct = coresMetCount / activeModuleCores.length;
-    finalGrade = 1.0 + 1.9 * corePct;
-  } else {
-    // 100% Core Competencies Met
-    const totalAdvanced = activeModuleAdvanced.length;
-    if (totalAdvanced === 0) {
-      finalGrade = 5.0;
+  // 1. Check if Habilitacion is approved for this student in this signature
+  const habKey = `${studentId}_${signatureName}`;
+  const hasHabilitacion = localState.data.habilitaciones && localState.data.habilitaciones[habKey];
+
+  if (hasHabilitacion) {
+    // If habilitacion is approved: Grade is exactly 3.0 and all Core competencies are considered Met
+    finalGrade = 3.0;
+    allCoresMet = true;
+    coresMetCount = activeModuleCores.length;
+    activeModuleCores.forEach(critId => {
+      finalCompetencies[critId] = 1;
+    });
+  } else if (cuts) {
+    // 2. Hybrid Cut-Based Calculation (Corte 1: 30%, Corte 2: 30%, Corte 3: 40%)
+    let weightedGradeSum = 0;
+    
+    Object.keys(cuts).forEach(cutName => {
+      const cutConfig = cuts[cutName];
+      const cutEvents = Object.keys(cutConfig.events);
+      
+      // Find active criteria in this Cut
+      const cutCriteria = [];
+      activeCriteriaList.forEach(critId => {
+        let evaluatedInCut = false;
+        cutEvents.forEach(ev => {
+          if (currentSignature.activeCriteriaByEvent[ev]?.includes(critId)) {
+            evaluatedInCut = true;
+          }
+        });
+        if (evaluatedInCut) {
+          cutCriteria.push(critId);
+        }
+      });
+      
+      // Calculate latest state for each criterion *within* this Cut's events
+      const cutCompetencies = {};
+      cutCriteria.forEach(critId => {
+        let latestCutState = null;
+        for (let i = cutEvents.length - 1; i >= 0; i--) {
+          const ev = cutEvents[i];
+          if (currentSignature.activeCriteriaByEvent[ev]?.includes(critId)) {
+            const evalKey = `${student.id}_${critId}_${ev}`;
+            const cellEval = evaluations[evalKey];
+            if (cellEval && cellEval.state && cellEval.state !== "Pending") {
+              latestCutState = cellEval.state;
+              break;
+            }
+          }
+        }
+        if (latestCutState === "Met" || latestCutState === "Approved") {
+          cutCompetencies[critId] = 1;
+        } else if (latestCutState === "Not Met" || latestCutState === "Disputed" || latestCutState === "Absent") {
+          cutCompetencies[critId] = 0;
+        } else {
+          cutCompetencies[critId] = null; // Unevaluated
+        }
+      });
+      
+      // Calculate Cut Grade using MNC logic
+      const cutCores = cutCriteria.filter(critId => criteria[critId].type === "Core");
+      const cutAdvanced = cutCriteria.filter(critId => criteria[critId].type === "Advanced");
+      
+      let cutCoresMetCount = 0;
+      let cutAllCoresMet = true;
+      cutCores.forEach(critId => {
+        if (cutCompetencies[critId] === 1) cutCoresMetCount++;
+        else cutAllCoresMet = false;
+      });
+      
+      let cutAdvancedMetCount = 0;
+      cutAdvanced.forEach(critId => {
+        if (cutCompetencies[critId] === 1) cutAdvancedMetCount++;
+      });
+      
+      let cutGrade = 1.0;
+      if (cutCores.length === 0) {
+        const advPct = cutAdvanced.length > 0 ? cutAdvancedMetCount / cutAdvanced.length : 1;
+        cutGrade = 3.0 + 2.0 * advPct;
+      } else if (!cutAllCoresMet) {
+        const corePct = cutCoresMetCount / cutCores.length;
+        cutGrade = 1.0 + 1.9 * corePct;
+      } else {
+        const advPct = cutAdvanced.length > 0 ? cutAdvancedMetCount / cutAdvanced.length : 1;
+        cutGrade = 3.0 + 2.0 * advPct;
+      }
+      
+      cutGrades[cutName] = parseFloat(cutGrade.toFixed(2));
+      weightedGradeSum += cutGrade * cutConfig.weight;
+    });
+    
+    // Apply final weighted grade, but respect MNC Safety Cap (if any Core is Not Met, cap at 2.9)
+    if (!allCoresMet && activeModuleCores.length > 0) {
+      finalGrade = Math.min(2.9, weightedGradeSum);
     } else {
-      const advPct = advancedMetCount / totalAdvanced;
-      // Linear mapping: 0% adv = 3.0, 50% = 4.0, 100% = 5.0
-      finalGrade = 3.0 + 2.0 * advPct;
+      finalGrade = weightedGradeSum;
     }
+  } else {
+    // 3. Fallback to Standard Numerical Calculation (without cuts)
+    if (activeModuleCores.length === 0) {
+      const advPct = activeModuleAdvanced.length > 0 ? advancedMetCount / activeModuleAdvanced.length : 1;
+      finalGrade = 3.0 + 2.0 * advPct;
+    } else if (!allCoresMet) {
+      const corePct = coresMetCount / activeModuleCores.length;
+      finalGrade = 1.0 + 1.9 * corePct;
+    } else {
+      const totalAdvanced = activeModuleAdvanced.length;
+      if (totalAdvanced === 0) {
+        finalGrade = 5.0;
+      } else {
+        const advPct = advancedMetCount / totalAdvanced;
+        finalGrade = 3.0 + 2.0 * advPct;
+      }
+    }
+  }
+  
+  // Calculate Habilitacion Eligibility
+  let eligibleForHabilitacion = false;
+  let reasonForIneligibility = "";
+  
+  if (!allCoresMet && !hasHabilitacion) {
+    const calculatedGrade = parseFloat(finalGrade.toFixed(2));
+    if (calculatedGrade >= 2.0 && calculatedGrade < 3.0) {
+      if (skipHabilitationCheck) {
+        eligibleForHabilitacion = true;
+      } else {
+        // Count how many subjects the student is failing in this program
+        let failedSubjectsCount = 0;
+        Object.keys(currentProgram.signatures).forEach(sigName => {
+          const sigGradeInfo = getStudentGradeInfo(studentId, programName, sigName, true);
+          if (sigGradeInfo && sigGradeInfo.grade < 3.0) {
+            failedSubjectsCount++;
+          }
+        });
+        
+        if (failedSubjectsCount <= 2) {
+          eligibleForHabilitacion = true;
+        } else {
+          reasonForIneligibility = `Reprobando ${failedSubjectsCount} asignaturas (máx. 2).`;
+        }
+      }
+    } else if (calculatedGrade < 2.0) {
+      reasonForIneligibility = "Nota final menor a 2.0.";
+    }
+  } else if (allCoresMet) {
+    reasonForIneligibility = "Asignatura aprobada.";
+  } else if (hasHabilitacion) {
+    reasonForIneligibility = "Habilitación ya aprobada.";
   }
   
   return {
@@ -530,7 +729,11 @@ function getStudentGradeInfo(studentId, programName, signatureName) {
     coresMetCount,
     totalCores: activeModuleCores.length,
     advancedMetCount,
-    totalAdvanced: activeModuleAdvanced.length
+    totalAdvanced: activeModuleAdvanced.length,
+    cutGrades,
+    eligibleForHabilitacion,
+    reasonForIneligibility,
+    hasHabilitacion
   };
 }
 
@@ -594,20 +797,38 @@ function calculateGradesAndMetrics() {
             const key = `${st.id}_${critId}_${ev}`;
             const cellEval = evaluations[key];
             
-            if (cellEval && cellEval.state === "Disputed" && sig.criteria[critId]) {
-              activeDisputesList.push({
-                studentId: st.id,
-                studentName: st.name,
-                studentTokens: st.tokens,
-                criterionId: critId,
-                criterionName: sig.criteria[critId].name,
-                criterionType: sig.criteria[critId].type,
-                eventId: ev,
-                defenseText: cellEval.defenseText || "Sin sustentaciones.",
-                evaluationKey: key,
-                programName: pKey,
-                signatureName: sKey
-              });
+            if (cellEval) {
+              if (cellEval.state === "Disputed" && sig.criteria[critId]) {
+                activeDisputesList.push({
+                  studentId: st.id,
+                  studentName: st.name,
+                  studentTokens: st.tokens,
+                  criterionId: critId,
+                  criterionName: sig.criteria[critId].name,
+                  criterionType: sig.criteria[critId].type,
+                  eventId: ev,
+                  defenseText: cellEval.defenseText || "Sin sustentaciones.",
+                  evaluationKey: key,
+                  programName: pKey,
+                  signatureName: sKey,
+                  isSupletorio: false
+                });
+              } else if (cellEval.state === "Absent" && cellEval.supletorioState === "Paid" && sig.criteria[critId]) {
+                activeDisputesList.push({
+                  studentId: st.id,
+                  studentName: st.name,
+                  studentTokens: st.tokens,
+                  criterionId: critId,
+                  criterionName: sig.criteria[critId].name,
+                  criterionType: sig.criteria[critId].type,
+                  eventId: ev,
+                  defenseText: "Examen con supletorio pagado físicamente. Listo para calificar.",
+                  evaluationKey: key,
+                  programName: pKey,
+                  signatureName: sKey,
+                  isSupletorio: true
+                });
+              }
             }
           });
         });
@@ -799,10 +1020,36 @@ function renderTeacherWorkspace(calculatedData) {
       
       let stateClass = "state-pending";
       let statusLabel = '<span class="cell-status-text">Pendiente</span> <span class="cell-status-icon">🟡</span>';
+      let titleTooltip = "Click para alternar: Pendiente -> Logrado -> No Logrado -> Ausente";
       
-      if (cellEval.state === "Met") { stateClass = "state-met"; statusLabel = '<span class="cell-status-text">Logrado</span> <span class="cell-status-icon">✅</span>'; }
-      else if (cellEval.state === "Not Met") { stateClass = "state-notmet"; statusLabel = '<span class="cell-status-text">No Logrado</span> <span class="cell-status-icon">❌</span>'; }
-      else if (cellEval.state === "Disputed") { stateClass = "state-disputed"; statusLabel = '<span class="cell-status-text">Apelación</span> <span class="cell-status-icon">⛔</span>'; }
+      if (cellEval.state === "Met") { 
+        stateClass = "state-met"; 
+        statusLabel = '<span class="cell-status-text">Logrado</span> <span class="cell-status-icon">✅</span>'; 
+      }
+      else if (cellEval.state === "Not Met") { 
+        stateClass = "state-notmet"; 
+        statusLabel = '<span class="cell-status-text">No Logrado</span> <span class="cell-status-icon">❌</span>'; 
+      }
+      else if (cellEval.state === "Disputed") { 
+        stateClass = "state-disputed"; 
+        statusLabel = '<span class="cell-status-text">Apelación</span> <span class="cell-status-icon">⛔</span>'; 
+        titleTooltip = "Sustentación de apelación activa. Haz clic para revisar.";
+      }
+      else if (cellEval.state === "Absent") {
+        if (cellEval.supletorioState === "Paid") {
+          stateClass = "state-absent-paid";
+          statusLabel = '<span class="cell-status-text">Ausente (Supletorio Pagado)</span> <span class="cell-status-icon">🎫</span>';
+          titleTooltip = "Supletorio verificado y pagado físicamente. Haz clic para calificar el examen.";
+        } else if (cellEval.supletorioState === "Pending") {
+          stateClass = "state-absent-pending";
+          statusLabel = '<span class="cell-status-text">Ausente (Supletorio Pendiente)</span> <span class="cell-status-icon">🟡</span>';
+          titleTooltip = "Ausente. Supletorio solicitado y pendiente de pago. Celda bloqueada.";
+        } else {
+          stateClass = "state-absent-none";
+          statusLabel = '<span class="cell-status-text">Ausente</span> <span class="cell-status-icon">⚪</span>';
+          titleTooltip = "Ausente de la evaluación. Sin registro de supletorio. Celda bloqueada.";
+        }
+      }
       
       tdBlock.innerHTML = `
         <div class="grading-cell-block ${stateClass}" 
@@ -810,7 +1057,7 @@ function renderTeacherWorkspace(calculatedData) {
              data-criterion-id="${critId}" 
              data-event-id="${evName}"
              data-eval-key="${key}"
-             title="Click para alternar: Pendiente -> Logrado -> No Logrado">
+             title="${titleTooltip}">
           <span>${statusLabel}</span>
         </div>
       `;
@@ -1181,10 +1428,18 @@ function renderPriorityInbox(disputes) {
       card.className = "dispute-card";
       card.dataset.evalKey = dispute.evaluationKey;
       
+      const badgeHTML = dispute.isSupletorio 
+        ? `<span class="dispute-token-badge font-mono" style="background-color: var(--bg-success-soft); color: var(--color-success); border-color: rgba(16, 185, 129, 0.2);">🎫 Supletorio Pagado</span>`
+        : `<span class="dispute-token-badge font-mono">${dispute.studentTokens} Tokens left</span>`;
+        
+      const buttonText = dispute.isSupletorio 
+        ? `<span>Revisar y Calificar →</span>`
+        : `<span>Revisar Sustentación →</span>`;
+
       card.innerHTML = `
         <div class="dispute-card-header">
           <span class="dispute-student-name">${dispute.studentName}</span>
-          <span class="dispute-token-badge font-mono">${dispute.studentTokens} Tokens left</span>
+          ${badgeHTML}
         </div>
         <div>
           <span class="dispute-criterion-name font-mono font-semibold" style="font-size: 0.68rem; padding: 2px 4px;">
@@ -1194,7 +1449,7 @@ function renderPriorityInbox(disputes) {
         <div class="dispute-snippet">"${dispute.defenseText}"</div>
         <div class="dispute-action-footer">
           <button class="appeal-action-btn font-sans">
-            <span>Revisar Sustentación →</span>
+            ${buttonText}
           </button>
         </div>
       `;
@@ -1780,16 +2035,50 @@ function cycleCellEvaluation(studentId, criterionId, eventId) {
       defenseText: cellEval.defenseText || "",
       evaluationKey: key,
       programName: pName,
-      signatureName: sName
+      signatureName: sName,
+      isSupletorio: false
     });
+    return;
+  }
+  
+  if (cellEval.state === "Absent") {
+    if (cellEval.supletorioState === "Paid") {
+      const pName = localState.data.selectedProgram;
+      const sName = localState.data.selectedSignature;
+      const currentSignature = localState.data.programs[pName].signatures[sName];
+      const student = currentSignature.students.find(s => s.id === studentId);
+      
+      openAppealDrawer({
+        studentId: studentId,
+        studentName: student.name,
+        studentTokens: student.tokens,
+        criterionId: criterionId,
+        criterionName: currentSignature.criteria[criterionId].name,
+        criterionType: currentSignature.criteria[criterionId].type,
+        eventId: eventId,
+        defenseText: "Examen con supletorio pagado físicamente. Listo para calificar.",
+        evaluationKey: key,
+        programName: pName,
+        signatureName: sName,
+        isSupletorio: true
+      });
+    } else {
+      alert("Esta celda está bloqueada porque el estudiante estuvo ausente en el examen. Para poder calificar, se debe verificar y registrar físicamente el pago del supletorio.");
+    }
     return;
   }
   
   let nextState = "Pending";
   if (cellEval.state === "Pending") nextState = "Met";
   else if (cellEval.state === "Met") nextState = "Not Met";
+  else if (cellEval.state === "Not Met") nextState = "Absent"; // Cycle: Pending -> Logrado -> No Logrado -> Ausente
   
-  localState.data.evaluations[key] = { state: nextState };
+  // Initialize supletorioState if next state is Absent
+  if (nextState === "Absent") {
+    localState.data.evaluations[key] = { state: "Absent", supletorioState: "None" };
+  } else {
+    localState.data.evaluations[key] = { state: nextState };
+  }
   refreshUI();
 }
 
@@ -1883,12 +2172,49 @@ function openAppealDrawer(dispute) {
   DOM.appealEventName.textContent = `${dispute.signatureName} [${dispute.eventId}]`;
   DOM.appealDefenseText.textContent = `"${dispute.defenseText}"`;
   
-  DOM.appealStudentTokens.innerHTML = "";
-  for (let i = 1; i <= 3; i++) {
-    const coin = document.createElement("span");
-    coin.className = `token-coin ${i > dispute.studentTokens ? 'spent' : ''}`;
-    coin.textContent = "🪙";
-    DOM.appealStudentTokens.appendChild(coin);
+  const tokenRow = DOM.appealStudentTokens.closest(".meta-row");
+  const drawerTitle = document.getElementById("appeal-drawer-title");
+  const defenseTitle = document.querySelector(".defense-evidence-section h3");
+  const rulesReminder = document.querySelector(".appeal-rules-reminder");
+
+  if (dispute.isSupletorio) {
+    if (drawerTitle) drawerTitle.textContent = "Calificación de Supletorio";
+    if (tokenRow) tokenRow.style.display = "none";
+    if (defenseTitle) defenseTitle.textContent = "Detalle del Supletorio";
+    if (rulesReminder) {
+      rulesReminder.innerHTML = `
+        <h4>Instrucciones del Supletorio:</h4>
+        <p style="font-size: 0.72rem; line-height: 1.35; color: var(--text-secondary); margin: 0;">
+          Este estudiante registró y pagó el supletorio físicamente en la corporación. 
+          Al calificar como <strong>Logrado</strong> o <strong>No Logrado</strong>, se actualizará el estado de la competencia y se recalculará su promedio. No se consumen ni se reembolsan tokens.
+        </p>
+      `;
+    }
+    if (DOM.appealBtnApprove) DOM.appealBtnApprove.querySelector("span").textContent = "Marcar como Logrado (✅)";
+    if (DOM.appealBtnMaintain) DOM.appealBtnMaintain.querySelector("span").textContent = "Marcar como No Logrado (❌)";
+  } else {
+    if (drawerTitle) drawerTitle.textContent = "Grade Appeal Request";
+    if (tokenRow) tokenRow.style.display = "flex";
+    if (defenseTitle) defenseTitle.textContent = "Sustentación Técnica de Estudiante";
+    if (rulesReminder) {
+      rulesReminder.innerHTML = `
+        <h4>Consecuencias de la Decisión:</h4>
+        <ul style="margin: 0; padding-left: 16px;">
+          <li><strong>Aprobar Apelación:</strong> La celda cambia a <strong class="text-success">Met (✅)</strong> permanentemente. Se reembolsa el token al estudiante y se recalcula la nota.</li>
+          <li><strong>Mantener Calificación:</strong> La celda se mantiene en <strong class="text-danger">Not Met (❌)</strong>. El token se <strong class="text-danger">consume permanentemente</strong> y la disputa se cierra.</li>
+        </ul>
+      `;
+    }
+    if (DOM.appealBtnApprove) DOM.appealBtnApprove.querySelector("span").textContent = "Aprobar Apelación (✅)";
+    if (DOM.appealBtnMaintain) DOM.appealBtnMaintain.querySelector("span").textContent = "Mantener Calificación (❌)";
+    
+    DOM.appealStudentTokens.innerHTML = "";
+    for (let i = 1; i <= 3; i++) {
+      const coin = document.createElement("span");
+      coin.className = `token-coin ${i > dispute.studentTokens ? 'spent' : ''}`;
+      coin.textContent = "🪙";
+      DOM.appealStudentTokens.appendChild(coin);
+    }
   }
   
   DOM.appealDrawerOverlay.classList.add("active");
@@ -1907,18 +2233,20 @@ function closeAppealDrawer() {
  */
 function approveDispute() {
   if (!activeReviewDispute) return;
-  const { studentId, evaluationKey, programName, signatureName } = activeReviewDispute;
+  const { studentId, evaluationKey, programName, signatureName, isSupletorio } = activeReviewDispute;
   
   // Turn to Met
   localState.data.evaluations[evaluationKey] = {
     state: "Met"
   };
   
-  // Refund Token
-  const currentSignature = localState.data.programs[programName].signatures[signatureName];
-  const student = currentSignature.students.find(s => s.id === studentId);
-  if (student && student.tokens < 3) {
-    student.tokens++;
+  // Refund Token only for standard disputes
+  if (!isSupletorio) {
+    const currentSignature = localState.data.programs[programName].signatures[signatureName];
+    const student = currentSignature.students.find(s => s.id === studentId);
+    if (student && student.tokens < 3) {
+      student.tokens++;
+    }
   }
   
   closeAppealDrawer();

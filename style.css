@@ -925,6 +925,36 @@ body {
   color: white;
 }
 
+/* Absent and Supletorio states */
+.grading-cell-block.state-absent-none {
+  background-color: rgba(255, 255, 255, 0.02);
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-muted);
+}
+.grading-cell-block.state-absent-none:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.grading-cell-block.state-absent-pending {
+  background-color: rgba(245, 158, 11, 0.04);
+  border: 1.5px dashed var(--color-warning);
+  color: var(--color-warning);
+}
+.grading-cell-block.state-absent-pending:hover {
+  background-color: rgba(245, 158, 11, 0.08);
+}
+
+.grading-cell-block.state-absent-paid {
+  background-color: rgba(16, 185, 129, 0.06);
+  border: 1.5px solid var(--color-success);
+  color: var(--color-success);
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.15);
+}
+.grading-cell-block.state-absent-paid:hover {
+  background-color: rgba(16, 185, 129, 0.12);
+  transform: scale(1.01);
+}
+
 /* Grade Indicator Styles (SaaS Scale) */
 .grade-indicator {
   display: inline-grid;
