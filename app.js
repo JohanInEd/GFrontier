@@ -254,6 +254,13 @@ class LocalState {
           this.data.habilitaciones = {};
           this.save();
         }
+        if (!this.data.habilitacionStates) {
+          this.data.habilitacionStates = {
+            "S4_Razonamiento cuantitativo": "Pending",
+            "S1_Razonamiento cuantitativo": "Paid"
+          };
+          this.save();
+        }
         return;
       } catch (e) {
         console.error("Failed to load local storage state:", e);
@@ -277,7 +284,11 @@ class LocalState {
       geminiApiKey: "AIzaSyBKnsF1Hp4HoiSd31NobFqV8ZFtQrqQY-Y",
       activeTab: "dashboard",
       managerSubjects: ["Razonamiento cuantitativo", "Ingles", "Comunicacion oral y escrita", "Competencias digitales"],
-      habilitaciones: {}
+      habilitaciones: {},
+      habilitacionStates: {
+        "S4_Razonamiento cuantitativo": "Pending",
+        "S1_Razonamiento cuantitativo": "Paid"
+      }
     };
     this.save();
   }
@@ -494,7 +505,13 @@ const DOM = {
   mgrReportView: document.getElementById("mgr-report-view"),
   mgrReportProgramTitle: document.getElementById("mgr-report-program-title"),
   mgrResultsContainer: document.getElementById("mgr-results-container"),
-  mgrSaveBtn: document.getElementById("mgr-save-btn")
+  mgrSaveBtn: document.getElementById("mgr-save-btn"),
+
+  // Exámenes Especiales DOM Elements
+  tabBtnSpecialExams: document.getElementById("tab-btn-special-exams"),
+  viewSpecialExams: document.getElementById("view-special-exams"),
+  specialSupletoriosFeed: document.getElementById("special-supletorios-feed"),
+  specialHabilitacionesFeed: document.getElementById("special-habilitaciones-feed")
 };
 
 let activeReviewDispute = null;
@@ -1525,6 +1542,193 @@ function renderPriorityInbox(disputes) {
 }
 
 /**
+ * Renders Special Exams Workspace (Supletorios & Habilitaciones)
+ */
+function renderSpecialExamsWorkspace() {
+  const calcData = calculateGradesAndMetrics();
+  const supletorios = calcData.activeDisputes.filter(d => d.isSupletorio);
+
+  // Render Supletorios
+  if (DOM.specialSupletoriosFeed) {
+    DOM.specialSupletoriosFeed.innerHTML = "";
+    if (supletorios.length === 0) {
+      DOM.specialSupletoriosFeed.innerHTML = `
+        <div style="text-align: center; padding: 40px 10px; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <span style="font-size: 2.5rem;">🎉</span>
+          <h4 style="font-weight: 700; color: var(--text-primary); margin: 0;">Sin supletorios pendientes</h4>
+          <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0; max-width: 300px; line-height: 1.35;">No hay exámenes especiales de inasistencia pagados listos para calificar.</p>
+        </div>
+      `;
+    } else {
+      supletorios.forEach(dispute => {
+        const card = document.createElement("div");
+        card.className = "student-portal-card";
+        card.style.padding = "14px";
+        card.style.backgroundColor = "var(--bg-primary)";
+        card.style.border = "1px solid var(--border-color)";
+        card.style.borderRadius = "var(--radius-sm)";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+        card.style.gap = "10px";
+        card.style.cursor = "pointer";
+        card.style.transition = "transform 0.15s ease, border-color 0.15s ease";
+
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0;">${dispute.studentName}</h4>
+              <p style="font-size: 0.7rem; color: var(--text-muted); margin: 2px 0 0 0;">${dispute.signatureName} • ${dispute.eventId}</p>
+            </div>
+            <span class="badge" style="background-color: rgba(16, 185, 129, 0.1); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.2); padding: 1px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em;">Supletorio Pagado</span>
+          </div>
+          <div style="font-size: 0.72rem; color: var(--text-secondary); background: var(--bg-secondary); padding: 8px; border-radius: 4px; border-left: 2px solid var(--color-success); line-height: 1.35;">
+            <strong>Competencia:</strong> ${dispute.criterionId} - ${dispute.criterionName} (${dispute.criterionType})
+          </div>
+          <div style="display: flex; justify-content: flex-end; margin-top: 4px;">
+            <button class="primary-btn font-sans" style="padding: 4px 12px; font-size: 0.7rem; border-radius: 4px; cursor: pointer;">Calificar →</button>
+          </div>
+        `;
+        card.addEventListener("click", () => {
+          openAppealDrawer(dispute);
+        });
+        DOM.specialSupletoriosFeed.appendChild(card);
+      });
+    }
+  }
+
+  // Render Habilitaciones
+  if (DOM.specialHabilitacionesFeed) {
+    DOM.specialHabilitacionesFeed.innerHTML = "";
+    
+    const pName = localState.data.selectedProgram;
+    const sName = localState.data.selectedSignature;
+    const currentProgram = localState.data.programs[pName];
+    const currentSignature = currentProgram ? currentProgram.signatures[sName] : null;
+    
+    if (!currentSignature) return;
+    
+    const students = currentSignature.students;
+    const failingOrHabStudents = [];
+
+    students.forEach(student => {
+      const habKey = `${student.id}_${sName}`;
+      // Calculate original grade by temporarily disabling habilitacion
+      const originalHasHab = localState.data.habilitaciones && localState.data.habilitaciones[habKey];
+      if (originalHasHab) {
+        localState.data.habilitaciones[habKey] = false;
+      }
+      const originalGradeInfo = getStudentGradeInfo(student.id, pName, sName);
+      if (originalHasHab) {
+        localState.data.habilitaciones[habKey] = true;
+      }
+
+      const currentGradeInfo = getStudentGradeInfo(student.id, pName, sName);
+      const paymentState = (localState.data.habilitacionStates && localState.data.habilitacionStates[habKey]) || "None";
+
+      if (originalGradeInfo.grade < 3.0 || currentGradeInfo.hasHabilitacion) {
+        failingOrHabStudents.push({
+          student,
+          originalGradeInfo,
+          currentGradeInfo,
+          paymentState,
+          habKey
+        });
+      }
+    });
+
+    if (failingOrHabStudents.length === 0) {
+      DOM.specialHabilitacionesFeed.innerHTML = `
+        <div style="text-align: center; padding: 40px 10px; color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 8px;">
+          <span style="font-size: 2.5rem;">🎓</span>
+          <h4 style="font-weight: 700; color: var(--text-primary); margin: 0;">Sin habilitaciones</h4>
+          <p style="font-size: 0.72rem; color: var(--text-secondary); margin: 0; max-width: 300px; line-height: 1.35;">No hay estudiantes reprobando o con habilitaciones activas en esta asignatura.</p>
+        </div>
+      `;
+    } else {
+      failingOrHabStudents.forEach(({ student, originalGradeInfo, currentGradeInfo, paymentState, habKey }) => {
+        const card = document.createElement("div");
+        card.className = "student-portal-card";
+        card.style.padding = "14px";
+        card.style.backgroundColor = "var(--bg-primary)";
+        card.style.border = "1px solid var(--border-color)";
+        card.style.borderRadius = "var(--radius-sm)";
+        card.style.display = "flex";
+        card.style.flexDirection = "column";
+        card.style.gap = "10px";
+
+        let statusBadgeHTML = "";
+        let actionBtnHTML = "";
+        let statusExplanation = "";
+
+        if (currentGradeInfo.hasHabilitacion || paymentState === "Approved") {
+          statusBadgeHTML = `<span class="badge" style="background-color: rgba(16, 185, 129, 0.1); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.2); padding: 1px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase;">Aprobada</span>`;
+          statusExplanation = `<p style="font-size: 0.7rem; color: var(--color-success); margin: 0; font-weight: 600;">✅ Habilitación aprobada con nota definitiva 3.0.</p>`;
+        } else if (!originalGradeInfo.eligibleForHabilitacion) {
+          statusBadgeHTML = `<span class="badge" style="background-color: rgba(239, 68, 68, 0.1); color: var(--color-danger); border: 1px solid rgba(239, 68, 68, 0.2); padding: 1px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase;">No Apto</span>`;
+          statusExplanation = `<p style="font-size: 0.7rem; color: var(--color-danger); margin: 0;">❌ No cumple requisitos MNC: ${originalGradeInfo.reasonForIneligibility}</p>`;
+        } else {
+          // Eligible but not approved yet
+          if (paymentState === "None") {
+            statusBadgeHTML = `<span class="badge" style="background-color: rgba(245, 158, 11, 0.1); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.2); padding: 1px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase;">Apto</span>`;
+            statusExplanation = `<p style="font-size: 0.7rem; color: var(--text-secondary); margin: 0;">🟡 Apto para habilitar. Pendiente de radicación.</p>`;
+            actionBtnHTML = `<button class="secondary-btn font-sans btn-register-payment" style="padding: 4px 10px; font-size: 0.68rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color);">Registrar Pago</button>`;
+          } else if (paymentState === "Pending") {
+            statusBadgeHTML = `<span class="badge" style="background-color: rgba(245, 158, 11, 0.15); color: var(--color-warning); border: 1px solid rgba(245, 158, 11, 0.25); padding: 1px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase;">Pendiente Pago</span>`;
+            statusExplanation = `<p style="font-size: 0.7rem; color: var(--color-warning); margin: 0;">⚠️ Solicitud registrada. Pendiente de pago administrativo.</p>`;
+            actionBtnHTML = `<button class="secondary-btn font-sans btn-register-payment" style="padding: 4px 10px; font-size: 0.68rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color);">Registrar Pago</button>`;
+          } else if (paymentState === "Paid") {
+            statusBadgeHTML = `<span class="badge" style="background-color: rgba(16, 185, 129, 0.15); color: var(--color-success); border: 1px solid rgba(16, 185, 129, 0.25); padding: 1px 6px; border-radius: 4px; font-size: 0.62rem; font-weight: 700; text-transform: uppercase;">Pagado</span>`;
+            statusExplanation = `<p style="font-size: 0.7rem; color: var(--color-info); margin: 0;">🟢 Pago verificado físicamente. Listo para programar y calificar.</p>`;
+            actionBtnHTML = `<button class="primary-btn font-sans btn-approve-hab" style="padding: 4px 10px; font-size: 0.68rem; border-radius: 4px; cursor: pointer;">Aprobar Habilitación</button>`;
+          }
+        }
+
+        card.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+              <h4 style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin: 0;">${student.name}</h4>
+              <p style="font-size: 0.7rem; color: var(--text-muted); margin: 2px 0 0 0;">Nota original: <span style="font-family: var(--font-mono); font-weight: 600;">${originalGradeInfo.grade.toFixed(2)}</span></p>
+            </div>
+            ${statusBadgeHTML}
+          </div>
+          <div style="background: var(--bg-secondary); padding: 8px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px;">
+            ${statusExplanation}
+          </div>
+          ${actionBtnHTML ? `
+          <div style="display: flex; justify-content: flex-end; margin-top: 2px;">
+            ${actionBtnHTML}
+          </div>
+          ` : ''}
+        `;
+
+        // Wire up buttons
+        const btnPay = card.querySelector(".btn-register-payment");
+        if (btnPay) {
+          btnPay.addEventListener("click", () => {
+            if (!localState.data.habilitacionStates) localState.data.habilitacionStates = {};
+            localState.data.habilitacionStates[habKey] = "Paid";
+            refreshUI();
+          });
+        }
+
+        const btnApprove = card.querySelector(".btn-approve-hab");
+        if (btnApprove) {
+          btnApprove.addEventListener("click", () => {
+            if (!localState.data.habilitaciones) localState.data.habilitaciones = {};
+            localState.data.habilitaciones[habKey] = true;
+            if (!localState.data.habilitacionStates) localState.data.habilitacionStates = {};
+            localState.data.habilitacionStates[habKey] = "Approved";
+            refreshUI();
+          });
+        }
+
+        DOM.specialHabilitacionesFeed.appendChild(card);
+      });
+    }
+  }
+}
+
+/**
  * Renders Configurator Checklist Panel
  */
 function renderConfiguratorPanel() {
@@ -2114,8 +2318,10 @@ function renderStudentSimulator() {
     DOM.simHabilitacionBanner.innerHTML = "";
     
     const bannerEl = DOM.simHabilitacionBanner;
+    const habKey = `${student.id}_${sName}`;
+    const paymentState = (localState.data.habilitacionStates && localState.data.habilitacionStates[habKey]) || "None";
     
-    if (stGradeInfo.hasHabilitacion) {
+    if (stGradeInfo.hasHabilitacion || paymentState === "Approved") {
       bannerEl.parentElement.style.display = "";
       bannerEl.style.backgroundColor = "rgba(16, 185, 129, 0.08)";
       bannerEl.style.borderColor = "var(--color-success)";
@@ -2123,6 +2329,24 @@ function renderStudentSimulator() {
       bannerEl.innerHTML = `
         <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">✅ Habilitación Aprobada</strong>
         Has presentado y aprobado la prueba de habilitación académica para esta asignatura. La nota definitiva ha sido registrada en el sistema institucional como <strong>3.0 (Aprobado)</strong> y las competencias técnicas asociadas se consideran superadas.
+      `;
+    } else if (paymentState === "Paid") {
+      bannerEl.parentElement.style.display = "";
+      bannerEl.style.backgroundColor = "rgba(16, 185, 129, 0.08)";
+      bannerEl.style.borderColor = "var(--color-info)";
+      bannerEl.style.color = "var(--color-info)";
+      bannerEl.innerHTML = `
+        <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">🟢 Habilitación Pagada</strong>
+        Habilitación Pagada. En espera de programación y registro por el docente.
+      `;
+    } else if (paymentState === "Pending") {
+      bannerEl.parentElement.style.display = "";
+      bannerEl.style.backgroundColor = "rgba(245, 158, 11, 0.08)";
+      bannerEl.style.borderColor = "var(--color-warning)";
+      bannerEl.style.color = "var(--color-warning)";
+      bannerEl.innerHTML = `
+        <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">⚠️ Solicitud Registrada</strong>
+        Solicitud de Habilitación registrada. Pendiente de pago en administración.
       `;
     } else if (stGradeInfo.grade >= 3.0) {
       bannerEl.parentElement.style.display = "";
@@ -2141,7 +2365,7 @@ function renderStudentSimulator() {
       bannerEl.innerHTML = `
         <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">⚠️ Apto para Habilitación</strong>
         Tienes derecho a presentar una prueba de habilitación para esta asignatura, ya que tu nota definitiva está entre 2.0 y 2.9 (tienes <strong>${stGradeInfo.grade.toFixed(2)}</strong>) y no repruebas más de 2 asignaturas en total en el programa actual. 
-        <br><em style="display: block; margin-top: 4px; font-size: 0.7rem; color: var(--text-secondary);">Radica y paga el derecho de habilitación en la oficina administrativa física para que el docente pueda programar y registrar tu prueba en la plataforma.</em>
+        <br><em style="display: block; margin-top: 4px; font-size: 0.7rem; color: var(--text-secondary);">Radica tu solicitud en la administración para habilitar esta materia.</em>
       `;
     } else {
       bannerEl.parentElement.style.display = "";
@@ -2249,6 +2473,9 @@ function refreshUI() {
   renderPriorityInbox(calcData.activeDisputes);
   renderConfiguratorPanel();
   renderStudentSimulator();
+  if (typeof renderSpecialExamsWorkspace === "function") {
+    renderSpecialExamsWorkspace();
+  }
   localState.save();
 }
 
@@ -2795,12 +3022,14 @@ function switchWorkspaceTab(tabName) {
   DOM.tabBtnMncSuite.classList.remove("active");
   if (DOM.tabBtnManagerSuite) DOM.tabBtnManagerSuite.classList.remove("active");
   if (DOM.tabBtnStudent) DOM.tabBtnStudent.classList.remove("active");
+  if (DOM.tabBtnSpecialExams) DOM.tabBtnSpecialExams.classList.remove("active");
 
   DOM.viewDashboard.classList.remove("active");
   DOM.viewGrading.classList.remove("active");
   DOM.viewMncSuite.classList.remove("active");
   if (DOM.viewManagerSuite) DOM.viewManagerSuite.classList.remove("active");
   if (DOM.viewStudentSimulator) DOM.viewStudentSimulator.classList.remove("active");
+  if (DOM.viewSpecialExams) DOM.viewSpecialExams.classList.remove("active");
 
   if (tabName === "dashboard") {
     DOM.tabBtnDashboard.classList.add("active");
@@ -2825,6 +3054,10 @@ function switchWorkspaceTab(tabName) {
     if (DOM.viewStudentSimulator) DOM.viewStudentSimulator.classList.add("active");
     switchStudentTab("dashboard");
     renderStudentSimulator();
+  } else if (tabName === "special-exams") {
+    if (DOM.tabBtnSpecialExams) DOM.tabBtnSpecialExams.classList.add("active");
+    if (DOM.viewSpecialExams) DOM.viewSpecialExams.classList.add("active");
+    renderSpecialExamsWorkspace();
   }
 }
 
@@ -3540,6 +3773,9 @@ function initializeEvents() {
   }
   if (DOM.tabBtnStudent) {
     DOM.tabBtnStudent.addEventListener("click", () => switchWorkspaceTab("student-simulator"));
+  }
+  if (DOM.tabBtnSpecialExams) {
+    DOM.tabBtnSpecialExams.addEventListener("click", () => switchWorkspaceTab("special-exams"));
   }
 
   // Dashboard Bottleneck quick link redirect
