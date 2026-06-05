@@ -43,21 +43,21 @@ const PROGRAM_HIERARCHY = {
           "Caso Final: Georreferenciación Móvil": ["C1", "C2", "C3", "A1", "A2", "T1", "T2"]
         },
         cuts: {
-          "Corte 1": {
+          "Nota 1": {
             weight: 0.3,
             events: {
               "Taller 1: Lógica y Algoritmos": { weight: 0.4, isExam: false },
               "Evaluación 1: Parcial": { weight: 0.6, isExam: true }
             }
           },
-          "Corte 2": {
+          "Nota 2": {
             weight: 0.3,
             events: {
               "Taller 2: Estructuras": { weight: 0.4, isExam: false },
               "Evaluación 2: Complejidad": { weight: 0.6, isExam: true }
             }
           },
-          "Corte 3": {
+          "Nota 3": {
             weight: 0.4,
             events: {
               "Proyecto Final: Sustentación": { weight: 0.3, isExam: false },
@@ -106,21 +106,21 @@ const PROGRAM_HIERARCHY = {
           "Proyecto Final: Optimización de Assets": ["C1", "C2", "C3", "A1", "A2", "T1", "T2"]
         },
         cuts: {
-          "Corte 1": {
+          "Nota 1": {
             weight: 0.3,
             events: {
               "Taller 1: Vectores y Proporciones": { weight: 0.4, isExam: false },
               "Evaluación 1: Fundamentos": { weight: 0.6, isExam: true }
             }
           },
-          "Corte 2": {
+          "Nota 2": {
             weight: 0.3,
             events: {
               "Taller 2: Composición": { weight: 0.4, isExam: false },
               "Evaluación 2: Tasas y Bitrates": { weight: 0.6, isExam: true }
             }
           },
-          "Corte 3": {
+          "Nota 3": {
             weight: 0.4,
             events: {
               "Taller 3: Optimización": { weight: 0.3, isExam: false },
@@ -234,7 +234,7 @@ class LocalState {
   }
 
   load() {
-    const saved = localStorage.getItem("CERW_corp_state_v5");
+    const saved = localStorage.getItem("CERW_corp_state_v6");
     if (saved) {
       try {
         this.data = JSON.parse(saved);
@@ -270,7 +270,7 @@ class LocalState {
   }
 
   save() {
-    localStorage.setItem("CERW_corp_state_v5", JSON.stringify(this.data));
+    localStorage.setItem("CERW_corp_state_v6", JSON.stringify(this.data));
   }
 
   resetToDefaults() {
@@ -610,7 +610,7 @@ function getStudentGradeInfo(studentId, programName, signatureName, skipHabilita
       finalCompetencies[critId] = 1;
     });
   } else if (cuts) {
-    // 2. Hybrid Cut-Based Calculation (Corte 1: 30%, Corte 2: 30%, Corte 3: 40%)
+    // 2. Hybrid Period-Based Calculation (Nota 1: 30%, Nota 2: 30%, Nota 3: 40%)
     let weightedGradeSum = 0;
     
     Object.keys(cuts).forEach(cutName => {
@@ -926,12 +926,15 @@ function renderTeacherWorkspace(calculatedData) {
     DOM.matrixTopHeaderRow.style.display = "";
     
     // Grouping Top Header
-    let activeCutName = "Sin Corte";
+    let activeCutName = "Sin Nota";
     let activeCutWeight = 0;
     if (currentSignature.cuts) {
       for (const [cutName, cutConfig] of Object.entries(currentSignature.cuts)) {
         if (cutConfig.events && cutConfig.events[evName]) {
           activeCutName = cutName;
+          if (cutName === "Nota 1") activeCutName = "Nota 1 (Primer Periodo)";
+          else if (cutName === "Nota 2") activeCutName = "Nota 2 (Segundo Periodo)";
+          else if (cutName === "Nota 3") activeCutName = "Nota 3 (Periodo Final)";
           activeCutWeight = cutConfig.weight;
           break;
         }
@@ -2238,7 +2241,7 @@ function renderStudentSimulator() {
     }
   }
 
-  // --- Render Boletín de Notas por Corte ---
+  // --- Render Boletín de Notas por Periodos (Nota 1, 2 y 3) ---
   if (DOM.simBoletinTbody) {
     DOM.simBoletinTbody.innerHTML = "";
     
@@ -2255,8 +2258,17 @@ function renderStudentSimulator() {
         else if (gradeVal >= 4.0 && gradeVal < 5.0) gradeClass = "grade-bracket-mastery";
         else if (gradeVal === 5.0) gradeClass = "grade-bracket-perfect";
         
+        let displayCutName = cutName;
+        if (cutName === "Nota 1") {
+          displayCutName = "Nota 1 (Periodo Inicial: Parcial y Talleres)";
+        } else if (cutName === "Nota 2") {
+          displayCutName = "Nota 2 (Periodo Intermedio: Hitos y Complejidad)";
+        } else if (cutName === "Nota 3") {
+          displayCutName = "Nota 3 (Periodo Final: Proyectos Integradores)";
+        }
+
         tr.innerHTML = `
-          <td style="padding: 10px; font-size: 0.78rem; font-weight: 600; color: var(--text-primary);">${cutName}</td>
+          <td style="padding: 10px; font-size: 0.78rem; font-weight: 600; color: var(--text-primary);">${displayCutName}</td>
           <td style="padding: 10px; text-align: center; font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono);">${(cutConfig.weight * 100).toFixed(0)}%</td>
           <td style="padding: 10px; text-align: right;">
             <span class="grade-indicator ${gradeClass}" style="padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700;">${gradeVal.toFixed(2)}</span>
@@ -2295,7 +2307,7 @@ function renderStudentSimulator() {
       summaryBg = "rgba(239, 68, 68, 0.05)";
       cappingAlert = `
         <div style="margin-top: 6px; padding: 8px; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 4px; color: var(--color-danger); font-size: 0.68rem; line-height: 1.35;">
-          <strong>⚠️ Restricción de Competencias (MNC):</strong> Tu promedio ponderado de cortes es <strong>${weightedAverage.toFixed(2)}</strong>, pero la nota definitiva ha sido limitada a <strong>2.9</strong> debido a que tienes competencias técnicas obligatorias (Core) en estado no logrado.
+          <strong>⚠️ Restricción de Competencias (MNC):</strong> Tu promedio ponderado de notas es <strong>${weightedAverage.toFixed(2)}</strong>, pero la nota definitiva ha sido limitada a <strong>2.9</strong> debido a que tienes competencias técnicas obligatorias (Core) en estado no logrado.
         </div>
       `;
     }
@@ -2307,7 +2319,7 @@ function renderStudentSimulator() {
         <span class="grade-indicator ${gradeLabelClass}" style="font-size: 1rem; font-weight: 800; padding: 4px 10px; border-radius: 4px;">${stGradeInfo.grade.toFixed(2)}</span>
       </div>
       <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">
-        Fórmula: (Corte 1 * 30%) + (Corte 2 * 30%) + (Corte 3 * 40%) ${stGradeInfo.allCoresMet ? "" : " + Límite MNC"}
+        Fórmula: (Nota 1 * 30%) + (Nota 2 * 30%) + (Nota 3 * 40%) ${stGradeInfo.allCoresMet ? "" : " + Límite MNC"}
       </div>
       ${cappingAlert}
     `;
