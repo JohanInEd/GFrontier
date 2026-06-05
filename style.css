@@ -749,6 +749,12 @@ body {
 }
 
 /* Headers */
+.grading-matrix thead {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
 .grading-matrix th {
   background-color: var(--bg-tertiary);
   border-bottom: 2px solid var(--border-color);
@@ -759,45 +765,32 @@ body {
   padding: 10px 14px;
   white-space: nowrap;
   vertical-align: bottom;
-  position: sticky;
-  top: 0;
-  z-index: 4;
 }
 
 /* Left-most header corner cell */
 .grading-matrix th:first-child {
   position: sticky;
   left: 0;
-  z-index: 5;
+  z-index: 6;
   background-color: var(--bg-tertiary);
   border-right: 2px solid var(--border-color);
 }
 
 /* Specific sticky alignments for two-row table header */
 #matrix-top-header-row th {
-  position: sticky;
-  top: 0;
-  z-index: 5;
   padding: 6px 14px;
   border-bottom: 1px solid var(--border-color);
 }
 
-#matrix-header-row th {
-  position: sticky;
-  top: 29px; /* height offset for top header row */
-  z-index: 4;
-}
-
 #matrix-top-header-row th:first-child {
   left: 0;
-  z-index: 6;
+  z-index: 7;
   background-color: var(--bg-secondary);
 }
 
 #matrix-header-row th:first-child {
   left: 0;
-  z-index: 5;
-  top: 29px;
+  z-index: 6;
 }
 
 /* Column Header Categories */
@@ -2470,7 +2463,7 @@ body {
    ========================================================== */
 .mnc-suite-workspace {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 350px 1fr;
   height: 100%;
   width: 100%;
   overflow: hidden;

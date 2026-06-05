@@ -493,7 +493,8 @@
                     <svg class="dropzone-icon" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                     </svg>
-                    <p class="dropzone-text" id="ai-dropzone-label">Arrastra el archivo de cualificación (.txt, .pdf) o haz clic para subir</p>
+                    <p class="dropzone-text" id="ai-dropzone-label" style="margin-bottom: 6px;">Arrastra el archivo de cualificación (.txt, .pdf) o haz clic para subir</p>
+                    <button type="button" class="sleek-btn-secondary text-sm" style="pointer-events: none; padding: 6px 14px;">Buscar Archivo</button>
                     <input type="file" id="ai-file-input" accept=".txt,.pdf" style="display: none;">
                   </div>
                 </div>
@@ -667,7 +668,7 @@
       <div id="view-manager-suite" class="workspace-view">
         <main class="mnc-suite-workspace">
           <!-- Left Configuration Panel -->
-          <aside class="mnc-suite-sidebar" style="flex: 0 0 350px; max-width: 350px;">
+          <aside class="mnc-suite-sidebar">
             <div class="mnc-sidebar-header">
               <div class="drawer-title-group">
                 <span class="drawer-tag bg-ai-tag">Suite del Gerente</span>
@@ -699,7 +700,8 @@
                     <svg class="dropzone-icon" width="28" height="28" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 4px;">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />
                     </svg>
-                    <p class="dropzone-text" id="mgr-dropzone-label" style="font-size: 0.68rem; line-height: 1.2;">Haga clic o arrastre aquí el catálogo</p>
+                    <p class="dropzone-text" id="mgr-dropzone-label" style="font-size: 0.68rem; line-height: 1.2; margin-bottom: 6px;">Haga clic o arrastre aquí el catálogo</p>
+                    <button type="button" class="sleek-btn-secondary text-xs" style="pointer-events: none; padding: 4px 10px;">Buscar Archivo</button>
                     <input type="file" id="mgr-file-input" accept=".txt,.pdf" style="display: none;">
                   </div>
                 </div>

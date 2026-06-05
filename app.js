@@ -2315,7 +2315,28 @@ function cycleCellEvaluation(studentId, criterionId, eventId) {
   let nextState = "Pending";
   if (cellEval.state === "Pending") nextState = "Met";
   else if (cellEval.state === "Met") nextState = "Not Met";
-  else if (cellEval.state === "Not Met") nextState = "Absent"; // Cycle: Pending -> Logrado -> No Logrado -> Ausente
+  else if (cellEval.state === "Not Met") {
+    // Only exam/parcial events can have "Absent" state
+    const pName = localState.data.selectedProgram;
+    const sName = localState.data.selectedSignature;
+    const currentSignature = localState.data.programs[pName].signatures[sName];
+    let isExam = false;
+    if (currentSignature.cuts) {
+      for (const cutConfig of Object.values(currentSignature.cuts)) {
+        if (cutConfig.events && cutConfig.events[eventId]) {
+          if (cutConfig.events[eventId].isExam) {
+            isExam = true;
+            break;
+          }
+        }
+      }
+    }
+    if (isExam) {
+      nextState = "Absent";
+    } else {
+      nextState = "Pending";
+    }
+  }
   
   // Initialize supletorioState if next state is Absent
   if (nextState === "Absent") {
