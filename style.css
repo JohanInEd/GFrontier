@@ -3067,6 +3067,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .inbox-search-wrapper .search-icon {
@@ -3080,6 +3081,8 @@ body {
 
 .inbox-search-wrapper input {
   width: 100%;
+  flex: 1;
+  min-width: 0;
   padding: 6px 12px 6px 30px;
   font-size: 0.78rem;
   background-color: var(--bg-tertiary);
@@ -3098,10 +3101,12 @@ body {
 .inbox-select-row {
   display: flex;
   gap: 6px;
+  width: 100%;
 }
 
 .inbox-select-row select {
   flex: 1;
+  min-width: 0;
   font-size: 0.72rem;
   padding: 4px 24px 4px 8px;
   appearance: none;
