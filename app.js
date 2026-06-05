@@ -342,6 +342,8 @@ const DOM = {
   inspectorElement: document.getElementById("inspector-element"),
   inspectorName: document.getElementById("inspector-name"),
   inspectorDesc: document.getElementById("inspector-desc"),
+  btnReplicateMet: document.getElementById("btn-replicate-met"),
+  btnReplicateNotMet: document.getElementById("btn-replicate-notmet"),
   
   // Consolidated MNC Control Suite Elements
   appMainContent: document.querySelector(".app-main-content"),
@@ -516,6 +518,7 @@ const DOM = {
 
 let activeReviewDispute = null;
 let activeStudentAppeal = null;
+let activeInspectorCriterionId = null;
 
 // --- 4. DATA LOGIC & GRADING FORMULAS ---
 
@@ -1005,6 +1008,7 @@ function renderTeacherWorkspace(calculatedData) {
     
     thCrit.style.cursor = "pointer";
     thCrit.addEventListener("click", () => {
+      activeInspectorCriterionId = critId;
       if (DOM.inspectorPlaceholder) DOM.inspectorPlaceholder.style.display = "none";
       if (DOM.inspectorContent) {
         DOM.inspectorContent.style.display = "block";
@@ -1823,6 +1827,49 @@ function renderConfiguratorPanel() {
   renderCategorizedList(DOM.coreCriteriaList, "Core");
   renderCategorizedList(DOM.advancedCriteriaList, "Advanced");
   renderCategorizedList(DOM.transversalCriteriaList, "Transversal");
+}
+
+/**
+ * Replicates the selected grade to all students in the active signature for the active event
+ */
+function replicateGradeToAll(state) {
+  if (!activeInspectorCriterionId) {
+    alert("Por favor seleccione un criterio haciendo clic en el código de cabecera de la matriz.");
+    return;
+  }
+  const pName = localState.data.selectedProgram;
+  const sName = localState.data.selectedSignature;
+  const evName = localState.data.selectedEvent;
+  
+  const currentProgram = localState.data.programs[pName];
+  const currentSignature = currentProgram ? currentProgram.signatures[sName] : null;
+  if (!currentSignature) return;
+
+  const students = currentSignature.students;
+  
+  let observation = "";
+  if (state === "Not Met") {
+    observation = prompt("Ingrese la observación que desea replicar para todos los estudiantes (opcional):") || "Sin observaciones específicas.";
+  }
+
+  students.forEach(student => {
+    const key = `${student.id}_${activeInspectorCriterionId}_${evName}`;
+    if (state === "Not Met") {
+      localState.data.evaluations[key] = {
+        state: "Not Met",
+        observation: observation
+      };
+    } else {
+      localState.data.evaluations[key] = {
+        state: "Met"
+      };
+    }
+  });
+
+  refreshUI();
+  
+  // Custom success visual feedback
+  alert(`Se ha replicado el estado "${state === "Met" ? "Logrado" : "No Logrado"}" para todos los estudiantes en el criterio ${activeInspectorCriterionId}.`);
 }
 
 /**
@@ -3763,6 +3810,14 @@ function initializeEvents() {
   // Teacher Drawer buttons
   DOM.appealBtnApprove.addEventListener("click", approveDispute);
   DOM.appealBtnMaintain.addEventListener("click", maintainDisputeGrade);
+
+  // Batch replicate buttons
+  if (DOM.btnReplicateMet) {
+    DOM.btnReplicateMet.addEventListener("click", () => replicateGradeToAll("Met"));
+  }
+  if (DOM.btnReplicateNotMet) {
+    DOM.btnReplicateNotMet.addEventListener("click", () => replicateGradeToAll("Not Met"));
+  }
   
   // Dialog: Add Event
   DOM.addEventBtn.addEventListener("click", () => DOM.dialogAddEvent.showModal());
