@@ -321,6 +321,7 @@ const DOM = {
   matrixModuleEventText: document.getElementById("matrix-module-event-text"),
   gradingMatrixTable: document.getElementById("grading-matrix-table"),
   matrixHeaderRow: document.getElementById("matrix-header-row"),
+  matrixTopHeaderRow: document.getElementById("matrix-top-header-row"),
   matrixBody: document.getElementById("matrix-body"),
   
   // Matrix Criterion Inspector Elements
@@ -395,6 +396,12 @@ const DOM = {
   studentTabCompetencies: document.getElementById("student-tab-competencies"),
   studentDashboardPanel: document.getElementById("student-dashboard-panel"),
   studentCompetenciesPanel: document.getElementById("student-competencies-panel"),
+  studentTabBoletin: document.getElementById("student-tab-boletin"),
+  studentBoletinPanel: document.getElementById("student-boletin-panel"),
+  simBoletinTbody: document.getElementById("sim-boletin-tbody"),
+  simBoletinSummaryBox: document.getElementById("sim-boletin-summary-box"),
+  simHabilitacionBanner: document.getElementById("sim-habilitacion-banner"),
+  simSupletoriosList: document.getElementById("sim-supletorios-list"),
   
   // Student Dashboard Details
   simDashboardGradeStatus: document.getElementById("sim-dashboard-grade-status"),
@@ -887,13 +894,54 @@ function renderTeacherWorkspace(calculatedData) {
   const criteria = currentSignature.criteria;
   const activeCrits = currentSignature.activeCriteriaByEvent[evName] || [];
   
+  if (DOM.matrixTopHeaderRow) DOM.matrixTopHeaderRow.innerHTML = "";
   DOM.matrixHeaderRow.innerHTML = "";
   DOM.matrixBody.innerHTML = "";
   DOM.matrixModuleEventText.textContent = `${pName} — ${sName} [${evName}]`;
   
   if (activeCrits.length === 0) {
+    if (DOM.matrixTopHeaderRow) DOM.matrixTopHeaderRow.style.display = "none";
     DOM.matrixHeaderRow.innerHTML = `<th colspan="3" style="text-align: center; padding: 30px; font-weight: 500;">No hay competencias activadas para esta evidencia. Activa celdas en el configurador lateral.</th>`;
     return;
+  }
+  
+  if (DOM.matrixTopHeaderRow) {
+    DOM.matrixTopHeaderRow.style.display = "";
+    
+    // Grouping Top Header
+    let activeCutName = "Sin Corte";
+    let activeCutWeight = 0;
+    if (currentSignature.cuts) {
+      for (const [cutName, cutConfig] of Object.entries(currentSignature.cuts)) {
+        if (cutConfig.events && cutConfig.events[evName]) {
+          activeCutName = cutName;
+          activeCutWeight = cutConfig.weight;
+          break;
+        }
+      }
+    }
+
+    const thTopInfo = document.createElement("th");
+    thTopInfo.colSpan = 3;
+    thTopInfo.className = "font-mono";
+    thTopInfo.style.textAlign = "left";
+    thTopInfo.style.backgroundColor = "var(--bg-secondary)";
+    thTopInfo.style.borderBottom = "1px solid var(--border-color)";
+    thTopInfo.innerHTML = `<span style="font-size: 0.68rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Estudiante y Notas</span>`;
+    DOM.matrixTopHeaderRow.appendChild(thTopInfo);
+
+    const thTopCut = document.createElement("th");
+    thTopCut.colSpan = activeCrits.length;
+    thTopCut.className = "font-mono";
+    thTopCut.style.textAlign = "center";
+    thTopCut.style.backgroundColor = "rgba(16, 185, 129, 0.05)";
+    thTopCut.style.borderBottom = "1px solid var(--border-color)";
+    thTopCut.innerHTML = `
+      <span style="font-size: 0.72rem; font-weight: 700; color: var(--color-success); text-transform: uppercase; letter-spacing: 0.05em;">
+        ⚡ ${activeCutName} (${(activeCutWeight * 100).toFixed(0)}%) — Evidencia: ${evName}
+      </span>
+    `;
+    DOM.matrixTopHeaderRow.appendChild(thTopCut);
   }
   
   // Headers
@@ -1985,6 +2033,202 @@ function renderStudentSimulator() {
       });
     }
   }
+
+  // --- Render Boletín de Notas por Corte ---
+  if (DOM.simBoletinTbody) {
+    DOM.simBoletinTbody.innerHTML = "";
+    
+    if (currentSignature.cuts) {
+      Object.keys(currentSignature.cuts).forEach(cutName => {
+        const cutConfig = currentSignature.cuts[cutName];
+        const gradeVal = stGradeInfo.cutGrades && stGradeInfo.cutGrades[cutName] !== undefined ? stGradeInfo.cutGrades[cutName] : 1.0;
+        
+        const tr = document.createElement("tr");
+        tr.style.borderBottom = "1px solid var(--border-color)";
+        
+        let gradeClass = "grade-bracket-failing";
+        if (gradeVal >= 3.0 && gradeVal < 4.0) gradeClass = "grade-bracket-passing";
+        else if (gradeVal >= 4.0 && gradeVal < 5.0) gradeClass = "grade-bracket-mastery";
+        else if (gradeVal === 5.0) gradeClass = "grade-bracket-perfect";
+        
+        tr.innerHTML = `
+          <td style="padding: 10px; font-size: 0.78rem; font-weight: 600; color: var(--text-primary);">${cutName}</td>
+          <td style="padding: 10px; text-align: center; font-size: 0.75rem; color: var(--text-secondary); font-family: var(--font-mono);">${(cutConfig.weight * 100).toFixed(0)}%</td>
+          <td style="padding: 10px; text-align: right;">
+            <span class="grade-indicator ${gradeClass}" style="padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700;">${gradeVal.toFixed(2)}</span>
+          </td>
+        `;
+        DOM.simBoletinTbody.appendChild(tr);
+      });
+    } else {
+      DOM.simBoletinTbody.innerHTML = `<tr><td colspan="3" style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.72rem;">Esta asignatura no tiene una estructura de cortes definida.</td></tr>`;
+    }
+  }
+
+  // --- Render Boletín Summary Box ---
+  if (DOM.simBoletinSummaryBox) {
+    DOM.simBoletinSummaryBox.innerHTML = "";
+    
+    const originalWeighted = stGradeInfo.grade;
+    let cappingAlert = "";
+    let summaryBg = "var(--bg-secondary)";
+    
+    let weightedAverage = 0;
+    if (currentSignature.cuts) {
+      Object.keys(currentSignature.cuts).forEach(cutName => {
+        const cutConfig = currentSignature.cuts[cutName];
+        const cutGrade = stGradeInfo.cutGrades && stGradeInfo.cutGrades[cutName] !== undefined ? stGradeInfo.cutGrades[cutName] : 1.0;
+        weightedAverage += cutGrade * cutConfig.weight;
+      });
+    }
+    
+    const wasCapped = !stGradeInfo.allCoresMet && weightedAverage >= 3.0;
+    
+    let gradeLabelClass = "grade-bracket-failing";
+    if (stGradeInfo.grade >= 3.0) gradeLabelClass = "grade-bracket-passing";
+    
+    if (wasCapped) {
+      summaryBg = "rgba(239, 68, 68, 0.05)";
+      cappingAlert = `
+        <div style="margin-top: 6px; padding: 8px; background-color: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2); border-radius: 4px; color: var(--color-danger); font-size: 0.68rem; line-height: 1.35;">
+          <strong>⚠️ Restricción de Competencias (MNC):</strong> Tu promedio ponderado de cortes es <strong>${weightedAverage.toFixed(2)}</strong>, pero la nota definitiva ha sido limitada a <strong>2.9</strong> debido a que tienes competencias técnicas obligatorias (Core) en estado no logrado.
+        </div>
+      `;
+    }
+    
+    DOM.simBoletinSummaryBox.style.backgroundColor = summaryBg;
+    DOM.simBoletinSummaryBox.innerHTML = `
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem;">
+        <span style="font-weight: 700; color: var(--text-primary);">Nota Semestral Definitiva:</span>
+        <span class="grade-indicator ${gradeLabelClass}" style="font-size: 1rem; font-weight: 800; padding: 4px 10px; border-radius: 4px;">${stGradeInfo.grade.toFixed(2)}</span>
+      </div>
+      <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">
+        Fórmula: (Corte 1 * 30%) + (Corte 2 * 30%) + (Corte 3 * 40%) ${stGradeInfo.allCoresMet ? "" : " + Límite MNC"}
+      </div>
+      ${cappingAlert}
+    `;
+  }
+
+  // --- Render Habilitación Alert Banner ---
+  if (DOM.simHabilitacionBanner) {
+    DOM.simHabilitacionBanner.innerHTML = "";
+    
+    const bannerEl = DOM.simHabilitacionBanner;
+    
+    if (stGradeInfo.hasHabilitacion) {
+      bannerEl.parentElement.style.display = "";
+      bannerEl.style.backgroundColor = "rgba(16, 185, 129, 0.08)";
+      bannerEl.style.borderColor = "var(--color-success)";
+      bannerEl.style.color = "var(--color-success)";
+      bannerEl.innerHTML = `
+        <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">✅ Habilitación Aprobada</strong>
+        Has presentado y aprobado la prueba de habilitación académica para esta asignatura. La nota definitiva ha sido registrada en el sistema institucional como <strong>3.0 (Aprobado)</strong> y las competencias técnicas asociadas se consideran superadas.
+      `;
+    } else if (stGradeInfo.grade >= 3.0) {
+      bannerEl.parentElement.style.display = "";
+      bannerEl.style.backgroundColor = "rgba(16, 185, 129, 0.08)";
+      bannerEl.style.borderColor = "rgba(16, 185, 129, 0.2)";
+      bannerEl.style.color = "var(--color-success)";
+      bannerEl.innerHTML = `
+        <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">🎉 Asignatura Aprobada</strong>
+        Cumples satisfactoriamente con los requisitos académicos establecidos. Has aprobado todas las competencias obligatorias de esta asignatura y no requieres realizar trámites adicionales.
+      `;
+    } else if (stGradeInfo.eligibleForHabilitacion) {
+      bannerEl.parentElement.style.display = "";
+      bannerEl.style.backgroundColor = "rgba(245, 158, 11, 0.08)";
+      bannerEl.style.borderColor = "var(--color-warning)";
+      bannerEl.style.color = "var(--color-warning)";
+      bannerEl.innerHTML = `
+        <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">⚠️ Apto para Habilitación</strong>
+        Tienes derecho a presentar una prueba de habilitación para esta asignatura, ya que tu nota definitiva está entre 2.0 y 2.9 (tienes <strong>${stGradeInfo.grade.toFixed(2)}</strong>) y no repruebas más de 2 asignaturas en total en el programa actual. 
+        <br><em style="display: block; margin-top: 4px; font-size: 0.7rem; color: var(--text-secondary);">Radica y paga el derecho de habilitación en la oficina administrativa física para que el docente pueda programar y registrar tu prueba en la plataforma.</em>
+      `;
+    } else {
+      bannerEl.parentElement.style.display = "";
+      bannerEl.style.backgroundColor = "rgba(239, 68, 68, 0.08)";
+      bannerEl.style.borderColor = "var(--color-danger)";
+      bannerEl.style.color = "var(--color-danger)";
+      bannerEl.innerHTML = `
+        <strong style="display: block; font-size: 0.8rem; margin-bottom: 4px;">❌ Reprobado sin derecho a Habilitación</strong>
+        No eres apto para habilitar esta asignatura. 
+        <br><strong>Motivo:</strong> ${stGradeInfo.reasonForIneligibility}
+        <br><em style="display: block; margin-top: 4px; font-size: 0.7rem; color: var(--text-secondary);">Deberás cursar y pagar la asignatura nuevamente en el próximo periodo académico.</em>
+      `;
+    }
+  }
+
+  // --- Render Missed Exams & Supletorios ---
+  if (DOM.simSupletoriosList) {
+    DOM.simSupletoriosList.innerHTML = "";
+    
+    let supletoriosCount = 0;
+    
+    // Scan evaluations for "Absent" states
+    Object.keys(evaluations).forEach(key => {
+      const parts = key.split("_");
+      if (parts.length >= 3 && parts[0] === student.id) {
+        const cellEval = evaluations[key];
+        if (cellEval && cellEval.state === "Absent") {
+          supletoriosCount++;
+          const critId = parts[1];
+          const eventItemName = parts.slice(2).join("_");
+          
+          let statusText = "Sin supletorio solicitado";
+          let statusColorClass = "state-absent-none";
+          let statusBadge = "🔴";
+          let explanation = "La calificación está bloqueada. Comunícate con la coordinación administrativa.";
+          
+          if (cellEval.supletorioState === "Pending") {
+            statusText = "Pendiente de pago";
+            statusColorClass = "state-absent-pending";
+            statusBadge = "🟡";
+            explanation = "Supletorio registrado administrativamente. Realiza el pago en tesorería.";
+          } else if (cellEval.supletorioState === "Paid") {
+            statusText = "Pagado físicamente";
+            statusColorClass = "state-absent-paid";
+            statusBadge = "🟢";
+            explanation = "Pago verificado y registrado. El docente ha recibido un ticket y ya puede calificarte.";
+          }
+          
+          const item = document.createElement("div");
+          item.style.padding = "10px";
+          item.style.borderRadius = "var(--radius-sm)";
+          item.style.backgroundColor = "var(--bg-primary)";
+          item.style.border = "1px solid var(--border-color)";
+          item.style.fontSize = "0.72rem";
+          item.style.display = "flex";
+          item.style.flexDirection = "column";
+          item.style.gap = "4px";
+          
+          item.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; font-weight: 700; color: var(--text-primary);">
+              <span>📝 Examen: ${eventItemName}</span>
+              <span class="font-mono font-semibold" style="font-size: 0.65rem; color: var(--text-muted);">${critId}</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.68rem; margin-top: 2px;">
+              <span style="color: var(--text-secondary);">Estado de Pago:</span>
+              <span class="font-semibold" style="display: flex; align-items: center; gap: 4px;">
+                ${statusBadge} <span class="badge ${statusColorClass}" style="padding: 1px 6px; border-radius: 3px; font-size: 0.65rem; border: none;">${statusText}</span>
+              </span>
+            </div>
+            <p style="margin: 4px 0 0 0; font-size: 0.68rem; color: var(--text-muted); line-height: 1.3;">
+              ${explanation}
+            </p>
+          `;
+          
+          DOM.simSupletoriosList.appendChild(item);
+        }
+      }
+    });
+    
+    if (supletoriosCount === 0) {
+      DOM.simSupletoriosList.innerHTML = `
+        <div style="text-align: center; padding: 20px 10px; color: var(--text-muted); font-size: 0.72rem; font-style: italic;">
+          ✅ No registras inasistencias ni exámenes perdidos en este módulo.
+        </div>
+      `;
+    }
+  }
 }
 
 function refreshUI() {
@@ -2587,6 +2831,13 @@ function switchStudentTab(tabName) {
       DOM.studentCompetenciesPanel.classList.remove("active");
     }
   }
+  if (DOM.studentBoletinPanel) {
+    if (tabName === "boletin") {
+      DOM.studentBoletinPanel.classList.add("active");
+    } else {
+      DOM.studentBoletinPanel.classList.remove("active");
+    }
+  }
 }
 
 /**
@@ -3182,6 +3433,9 @@ function initializeEvents() {
   }
   if (DOM.studentTabCompetencies) {
     DOM.studentTabCompetencies.addEventListener("click", () => switchStudentTab("competencies"));
+  }
+  if (DOM.studentTabBoletin) {
+    DOM.studentTabBoletin.addEventListener("click", () => switchStudentTab("boletin"));
   }
 
   // Student Picker in Simulator

@@ -773,6 +773,33 @@ body {
   border-right: 2px solid var(--border-color);
 }
 
+/* Specific sticky alignments for two-row table header */
+#matrix-top-header-row th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+#matrix-header-row th {
+  position: sticky;
+  top: 29px; /* height offset for top header row */
+  z-index: 4;
+}
+
+#matrix-top-header-row th:first-child {
+  left: 0;
+  z-index: 6;
+  background-color: var(--bg-secondary);
+}
+
+#matrix-header-row th:first-child {
+  left: 0;
+  z-index: 5;
+  top: 29px;
+}
+
 /* Column Header Categories */
 .col-header-cat {
   font-size: 0.65rem;

@@ -408,6 +408,9 @@
               <table class="grading-matrix" id="grading-matrix-table">
                 <!-- Headers and rows are dynamically rendered by app.js -->
                 <thead>
+                  <tr id="matrix-top-header-row">
+                    <!-- Dynamically filled -->
+                  </tr>
                   <tr id="matrix-header-row">
                     <!-- Dynamically filled -->
                   </tr>
@@ -791,6 +794,9 @@
             <button id="student-tab-dashboard" class="student-tab-btn active" style="padding: 8px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;" data-student-tab="dashboard">
               <span>📊 Mi Rendimiento</span>
             </button>
+            <button id="student-tab-boletin" class="student-tab-btn" style="padding: 8px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;" data-student-tab="boletin">
+              <span>📝 Boletín y Trámites</span>
+            </button>
             <button id="student-tab-competencies" class="student-tab-btn" style="padding: 8px 16px; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;" data-student-tab="competencies">
               <span>🎯 Competencias y Apelaciones</span>
             </button>
@@ -888,6 +894,68 @@
                   <!-- Dynamic recommendations populated here -->
                 </div>
               </div>
+            </div>
+          </div>
+
+          <!-- SUB-VIEW 3: Boletín y Trámites -->
+          <div id="student-boletin-panel" class="student-panel" style="display: none; flex-direction: column; gap: 20px; flex: 1; min-height: 0; overflow-y: auto; padding-right: 4px;">
+            <div class="student-portal-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; flex: 1;">
+              
+              <!-- Left Column: Boletín de Notas -->
+              <div class="student-portal-card" style="display: flex; flex-direction: column; gap: 16px;">
+                <h4 style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin: 0;">
+                  <span>📝 Boletín de Notas por Corte</span>
+                </h4>
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 16px;">
+                  <p style="font-size: 0.75rem; color: var(--text-secondary); line-height: 1.45;">
+                    Calificaciones parciales obtenidas en cada corte académico y promedio general del semestre.
+                  </p>
+                  
+                  <table class="dashboard-table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                      <tr style="border-bottom: 2px solid var(--border-color);">
+                        <th style="padding: 10px; text-align: left; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted);">Periodo / Corte</th>
+                        <th style="padding: 10px; text-align: center; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); width: 80px;">Porcentaje</th>
+                        <th style="padding: 10px; text-align: right; font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); width: 100px;">Calificación</th>
+                      </tr>
+                    </thead>
+                    <tbody id="sim-boletin-tbody">
+                      <!-- Dynamically populated rows -->
+                    </tbody>
+                  </table>
+                  
+                  <div id="sim-boletin-summary-box" style="padding: 12px; border-radius: var(--radius-sm); background-color: var(--bg-primary); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 6px;">
+                    <!-- Dynamic summary / Capping alert -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Right Column: Habilitaciones & Supletorios -->
+              <div style="display: flex; flex-direction: column; gap: 20px;">
+                <!-- Habilitación Alert Banner -->
+                <div class="student-portal-card" style="display: flex; flex-direction: column; gap: 12px;">
+                  <h4 style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin: 0;">
+                    <span>⚠️ Estado de Habilitación</span>
+                  </h4>
+                  <div id="sim-habilitacion-banner" style="padding: 14px; border-radius: var(--radius-sm); border: 1px solid transparent; font-size: 0.75rem; line-height: 1.45;">
+                    <!-- Dynamic alert banner -->
+                  </div>
+                </div>
+
+                <!-- Supletorios List -->
+                <div class="student-portal-card" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+                  <h4 style="font-size: 0.72rem; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.05em; font-weight: 700; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; margin: 0;">
+                    <span>🎫 Exámenes Perdidos / Supletorios</span>
+                  </h4>
+                  <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.35; margin: 0;">
+                    Registro de ausencias en exámenes y estado del trámite de supletorio. Las calificaciones sólo se habilitan cuando el estado es <strong>Pagado</strong>.
+                  </p>
+                  <div id="sim-supletorios-list" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1;">
+                    <!-- Dynamic supletorios items -->
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
