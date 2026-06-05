@@ -2095,12 +2095,25 @@ function renderStudentSimulator() {
           }
           
           const actionPlan = getCriterionActionPlan(diag.id, diag.crit.name);
+          
+          let observationHTML = "";
+          const evalKey = `${student.id}_${diag.id}_${evName}`;
+          const cellEval = evaluations[evalKey];
+          if (cellEval && cellEval.observation) {
+            observationHTML = `
+              <div style="margin-top: 8px; padding: 6px 10px; background-color: rgba(239, 68, 68, 0.04); border-left: 2px solid var(--color-notmet); border-radius: 4px; font-size: 0.7rem; color: var(--text-secondary); line-height: 1.35;">
+                <strong>Observación del Docente:</strong> "${cellEval.observation}"
+              </div>
+            `;
+          }
+
           card.innerHTML = `
             <div style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary); display: flex; justify-content: space-between; align-items: center;">
               <span>${title}</span>
               <span class="font-mono" style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">${typeLabel}</span>
             </div>
             <p style="font-size: 0.72rem; color: var(--text-secondary); line-height: 1.35; margin-top: 2px;">${advice}</p>
+            ${observationHTML}
             <div style="margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border-color); font-size: 0.7rem; color: var(--text-muted);">
               ${actionPlan}
             </div>
@@ -2580,6 +2593,12 @@ function cycleCellEvaluation(studentId, criterionId, eventId) {
   // Initialize supletorioState if next state is Absent
   if (nextState === "Absent") {
     localState.data.evaluations[key] = { state: "Absent", supletorioState: "None" };
+  } else if (nextState === "Not Met") {
+    const observation = prompt("Ingrese observaciones sobre este desempeño No Conforme (opcional):");
+    localState.data.evaluations[key] = { 
+      state: nextState,
+      observation: observation || "Sin observaciones específicas."
+    };
   } else {
     localState.data.evaluations[key] = { state: nextState };
   }
@@ -2765,9 +2784,12 @@ function maintainDisputeGrade() {
   if (!activeReviewDispute) return;
   const { evaluationKey } = activeReviewDispute;
   
+  const observation = prompt("Ingrese observaciones sobre este desempeño No Conforme (opcional):");
+  
   // Lock to Not Met
   localState.data.evaluations[evaluationKey] = {
-    state: "Not Met"
+    state: "Not Met",
+    observation: observation || "Sin observaciones específicas."
   };
   
   closeAppealDrawer();
